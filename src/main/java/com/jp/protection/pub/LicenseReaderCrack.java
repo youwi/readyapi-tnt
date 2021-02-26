@@ -12,10 +12,11 @@ import java.util.Properties;
 
 /**
  * readapi3.6-tnt
- * 这是代码片段,我要的是它的字节码
+ * 这是代码片段,我要的是它的字节码,这里只有核心代码,
+ * 还要用字节码来组合
  * Created by yu on 2021/2/26.
  */
-public class MethodReadLicense {
+public class LicenseReaderCrack {
     protected License fLicense;
 
     protected void readLicense(final byte[] array) {
