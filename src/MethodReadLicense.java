@@ -1,5 +1,5 @@
-package com.jp.protection.pub;
-
+import com.jp.protection.pub.License;
+import com.jp.protection.pub.LicenseImpl;
 import com.jp.protection.utils.LicenseUtils;
 
 import java.io.ByteArrayInputStream;

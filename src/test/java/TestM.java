@@ -1,5 +1,3 @@
-import com.jp.protection.pub.LicenseReader;
-import com.jp.protection.pub.LicenseReaderDump;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -19,7 +17,7 @@ public class TestM {
     @Test
     public void classDumpTest() throws Exception {
         byte[] s= LicenseReaderDump.dump();
-        FileOutputStream fileOutputStream= new FileOutputStream(new File("tmp.class"));
+        FileOutputStream fileOutputStream= new FileOutputStream(new File("Fake.class"));
         fileOutputStream.write(s);
         fileOutputStream.flush();
     }
