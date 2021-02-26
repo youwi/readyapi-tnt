@@ -11,7 +11,7 @@ public class TestM {
 
     @Test
     public void sfe(){
-       // new LicenseReader();
+       // new LicenseReaderDecompile();
     }
 
     @Test

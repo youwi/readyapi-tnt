@@ -1,26 +1,22 @@
-import com.jp.protection.pub.License;
-import com.jp.protection.pub.LicenseImpl;
-import com.jp.protection.utils.LicenseUtils;
+  //强制设置过期时间为2114年
+  //修改的是com.jp.protection.pub.LicenseReader.readLicense()
+  //反编译出来的代码不能直接使用.
 
-import java.io.ByteArrayInputStream;
-import java.util.Date;
-import java.util.Properties;
+  //先转换为字节码来,再复制字节码再压缩进jar里
 
-/**
- * readapi3.6-tnt
- * Created by yu on 2021/2/26.
- */
-public class MethodReadLicense {
-    protected License fLicense;
+  //脚本在build.gradle中
 
-    protected void readLicense(final byte[] array) {
+  //核心代码如下:
+  protected void readLicense(final byte[] array) {
         try {
             final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(array);
             try {
                 final Properties properties = new Properties();
                 properties.load(byteArrayInputStream);
                 LicenseImpl license = new LicenseImpl();
-                license.getLicenseExpireDate().setYear(2114);
+                Date exDate = new Date();
+                exDate.setYear(2114);
+                license.setLicenseExpireDate(exDate);
                 LicenseUtils.load( license, properties);
                 this.fLicense =license;
             } finally {
@@ -28,8 +24,6 @@ public class MethodReadLicense {
             }
         } catch (Exception ex) {
             this.fLicense = null;
-            System.out.println(ex.getCause().toString());
+            this.error(ex);
         }
     }
-
-}

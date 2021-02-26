@@ -1,17 +1,11 @@
 apply plugin: 'java'
 
 version = "1.3.4"
-group = "com.thirdparty"
-archivesBaseName = "Base"
+group = "com.crack"
+archivesBaseName = "crackSource"
 
 import java.util.zip.*
-sourceSets {
-    main{
-        java {
-            srcDirs "src"
-        }
-    }
-}
+
 repositories {
     mavenCentral()
 }
@@ -23,13 +17,9 @@ dependencies {
     compile files('Protection-5.1.5-old.jar')
     compile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     compile 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-   // compile 'asm:org.objectweb:3.3.1-v201105211655'
     implementation group: 'org.ow2.asm', name: 'asm', version: '7.1'
     implementation group: 'org.ow2.asm', name: 'asm-util', version: '7.1'
     implementation group: 'org.ow2.asm', name: 'asm-commons', version: '7.1'
-
-    //implementation group: 'org.objectweb.asm', name: 'asm', version: '3.1'
-
 }
 
 test {
@@ -69,12 +59,12 @@ task zipTheFile {
     zos.close()
     zip.close()
     // println zipIn.delete()
-    zipTemp.renameTo("Protection-5.1.5.jar")
+    zipTemp.renameTo("Protection-5.1.5-crack.jar")
     // zipTemp.copy
 }
 
 
 task copyTask(type: Copy) {
-    from 'Protection-5.1.5.jar'
+    from 'Protection-5.1.5-crack.jar'
     into '/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib/'
 }
