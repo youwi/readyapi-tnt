@@ -1,0 +1,76 @@
+apply plugin: 'java'
+
+version = "1.3.4"
+group = "com.thirdparty"
+archivesBaseName = "Base"
+
+import java.util.zip.*
+
+sourceSets {
+    main{
+        java {
+            srcDirs "src"
+        }
+    }
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //compileOnly fileTree(dir:'/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib',include:['*.jar'])
+    compile files('Protection-5.1.5-old.jar')
+    compile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    compile 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+   // compile 'asm:org.objectweb:3.3.1-v201105211655'
+    implementation group: 'org.ow2.asm', name: 'asm', version: '7.1'
+    implementation group: 'org.ow2.asm', name: 'asm-util', version: '7.1'
+    implementation group: 'org.ow2.asm', name: 'asm-commons', version: '7.1'
+
+    //implementation group: 'org.objectweb.asm', name: 'asm', version: '3.1'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+task zipTheFile {
+    def zipName = 'Protection-5.1.5-old.jar'
+    def fileName = 'com/jp/protection/pub/LicenseReader.class'
+    def zipIn = new File(zipName)
+    if (!zipIn.exists()) {
+        println "原文件不存在"
+    }
+    def zip = new ZipFile(zipIn)
+    def zipTemp = File.createTempFile('Protection-5.1.5', '.jar', new File('./'))
+    zipTemp.deleteOnExit()
+    def zos = new ZipOutputStream(new FileOutputStream(zipTemp))
+
+    for (zipEntry in zip.entries()) {
+        def input = zip.getInputStream(zipEntry)
+        if (!zipEntry.name.equalsIgnoreCase(fileName)) {
+            zos.putNextEntry(zipEntry)
+            zos << input.bytes
+        } else {
+            zos.putNextEntry(new ZipEntry(fileName))
+            def dir = sourceSets.main.output.classesDirs[0].getPath()
+            def classFile = new File(dir + "/com/jp/protection/pub/LicenseReader.class")
+            if (classFile.exists()) {
+                def newIs = new FileInputStream(classFile)
+                zos << newIs.bytes
+            }
+        }
+        zos.closeEntry()
+    }
+
+    zos.close()
+    zip.close()
+    // println zipIn.delete()
+    zipTemp.renameTo("Protection-5.1.5.jar")
+    // zipTemp.copy
+}
+
+task copyTask(type: Copy) {
+    from 'Protection-5.1.5.jar'
+    into '/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib/'
+}
