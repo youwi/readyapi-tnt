@@ -16,7 +16,7 @@ import static org.objectweb.asm.Opcodes.V1_5;
  * readapi3.6-tnt
  * Created by yu on 2021/2/26.
  */
-public class TestM {
+public class PlanA {
     static Object publicObject = null;
 
     @Test
@@ -108,24 +108,7 @@ public class TestM {
         return fileData.toString();
     }
 
-    @Test
-    void byByteCode() throws IOException {
-        // 操作字节码,
-        ClassReader classReaderOri = new ClassReader("com.jp.protection.pub.LicenseReader");
 
-        ClassReader classReaderCrack = new ClassReader("com.jp.protection.pub.LicenseReaderCrack");
-
-        ClassWriter cw = new ClassWriter(classReaderOri, 0);
-
-        InjectMethodVisitor injectMethodVisitor = new InjectMethodVisitor(cw);
-        classReaderOri.accept(injectMethodVisitor, 0);
-        classReaderCrack.accept(injectMethodVisitor, 0);
-
-        FileOutputStream fileOutputStream = new FileOutputStream(new File("FakePlanB.class"));
-        fileOutputStream.write(cw.toByteArray());
-        fileOutputStream.flush();
-
-    }
 
     @Test
     public void classDumpTest() throws Exception {
@@ -135,39 +118,3 @@ public class TestM {
         fileOutputStream.flush();
     }
 }
-
-class InjectMethodVisitor extends ClassVisitor {
-
-    boolean isOri = false;
-
-    public InjectMethodVisitor(ClassVisitor classVisitor) {
-        //super(V1_5,classVisitor);
-        super(ASM4, classVisitor);
-    }
-
-    @Override
-    public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-        if (name.equals("readLicense") && descriptor.equals("([B)V")) {
-            if (isOri) {
-                TestM.publicObject = cv.visitMethod(access, name, descriptor, signature, exceptions);
-            } else if (TestM.publicObject != null) {
-                return (MethodVisitor) TestM.publicObject;
-            } else {
-                System.out.println("没有初始化设置isOri");
-            }
-            return null;
-        }
-        return cv.visitMethod(access, name, descriptor, signature, exceptions);
-    }
-
-
-    @Override
-    public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        if (name.equals("com/jp/protection/pub/LicenseReader")) { // className
-            isOri = true;
-        }
-        cv.visit(V1_5, access, name, signature, superName, interfaces);
-
-    }
-}
-
