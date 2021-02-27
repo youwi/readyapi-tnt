@@ -45,6 +45,9 @@
     使用以前破解soapui4.0一样的方案. 
     把com.jp.protection.pub.LicenseReader.fSkipEncryption=true
     然后把key解密
+    soapui36.key  加密key
+    soapui36.key.txt 明文txt
+    soapui36-decode.key 明文Key(有crc检验)
 
 ### build
     gradle build

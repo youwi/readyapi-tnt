@@ -27,6 +27,31 @@ test {
     useJUnitPlatform()
 }
 task zipTheFile {
+    classToZipFile("Fake.class")
+}
+
+task zipTheFilePlanB {
+    classToZipFile("FakePlanB.class")
+}
+task zipTheFilePlanC {
+    classToZipFile("FakePlanC.class")
+}
+
+task copyToSystem(type: Copy) {
+    from 'Protection-5.1.5-crack.jar'
+    into '/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib/'
+}
+
+task copyOldJar(type: Copy) {
+    from 'lib/Protection-5.1.5-old.jar'
+    into '/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib/'
+}
+/**
+ * 复制class文件到zip文件中,替换LicenseReader.class
+ * 默认路径为:lib/Protection-5.1.5-old.jar
+ * 默认文件名:Protection-5.1.5-crack.jar
+ */
+void classToZipFile(className){
     def zipName = 'lib/Protection-5.1.5-old.jar'
     def fileName = 'com/jp/protection/pub/LicenseReader.class'
     def zipIn = new File(zipName)
@@ -46,7 +71,7 @@ task zipTheFile {
         } else {
             zos.putNextEntry(new ZipEntry(fileName))
             def dir = sourceSets.main.output.classesDirs[0].getPath()
-            def classFile = new File("Fake.class")
+            def classFile = new File(className)
             if (classFile.exists()) {
                 def newIs = new FileInputStream(classFile)
                 zos << newIs.bytes
@@ -59,18 +84,6 @@ task zipTheFile {
 
     zos.close()
     zip.close()
-    // println zipIn.delete()
     zipTemp.renameTo("Protection-5.1.5-crack.jar")
-    // zipTemp.copy
 }
 
-
-task copyToSystem(type: Copy) {
-    from 'Protection-5.1.5-crack.jar'
-    into '/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib/'
-}
-
-task copyOldJar(type: Copy) {
-    from 'lib/Protection-5.1.5-old.jar'
-    into '/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib/'
-}

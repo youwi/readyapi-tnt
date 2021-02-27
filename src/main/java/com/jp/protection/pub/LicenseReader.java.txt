@@ -1,0 +1,560 @@
+/**
+ * Created by yu on 15/10/1.
+ */
+package com.jp.protection.pub;
+
+import com.jp.protection.security.SecurityProvider;
+import com.jp.protection.security.SecurityProviderFactory;
+import com.jp.protection.utils.CustomCRC32;
+import com.jp.protection.utils.LicenseUtils;
+import dev.util.StreamUtil;
+import dev.util.StringUtils;
+
+import java.io.*;
+import java.security.PublicKey;
+import java.util.Properties;
+import java.util.Vector;
+
+public class LicenseReader {
+    private transient Vector fLicenseReaderListeners;
+    protected License fLicense;
+    protected String fLicenseFileName;
+    protected boolean fUserHomeRelative = true;
+    protected String fLicenseFolder = "";
+    protected String fLicenseResourceFolder = "";
+    protected boolean fLicenseRead = false;
+    protected boolean fVerbose = false;
+    protected boolean fSkipEncryption = true;
+    protected byte[] fDecryptKeyBytes;
+    protected LicenseReaderIssueResolver fLicenseReaderIssueResolver;
+
+    public String getLicenseResourceFolder() {
+        return this.fLicenseResourceFolder;
+    }
+
+    public void setLicenseResourceFolder(String paramString) {
+        this.fLicenseResourceFolder = paramString;
+    }
+
+    public byte[] getDecryptKeyBytes() {
+        return this.fDecryptKeyBytes;
+    }
+
+    public void setDecryptKeyBytes(byte[] paramArrayOfByte) {
+        this.fDecryptKeyBytes = paramArrayOfByte;
+    }
+
+    public void setDecryptKeyBytes(String paramString) {
+        boolean bool = true;
+        String[] arrayOfString = paramString.split(",");
+        this.fDecryptKeyBytes = new byte[arrayOfString.length];
+        int i = 0;
+        do {
+            if (i >= arrayOfString.length) {
+                break;
+            }
+            this.fDecryptKeyBytes[i] = Byte.parseByte(arrayOfString[i].trim());
+            i++;
+        } while (!bool);
+    }
+
+    /**
+     * @deprecated
+     */
+    public byte[] getPrivateKeyBytes() {
+        return getDecryptKeyBytes();
+    }
+
+    /**
+     * @deprecated
+     */
+    public void setPrivateKeyBytes(byte[] paramArrayOfByte) {
+        setDecryptKeyBytes(paramArrayOfByte);
+    }
+
+    /**
+     * @deprecated
+     */
+    public void setPrivateKeyBytes(String paramString) {
+        setDecryptKeyBytes(paramString);
+    }
+
+    public boolean isLicenseRead() {
+        return this.fLicenseRead;
+    }
+
+    public boolean isSkipEncryption() {
+        return this.fSkipEncryption;
+    }
+
+    public void setSkipEncryption(boolean paramBoolean) {
+        this.fSkipEncryption = paramBoolean;
+    }
+
+    public boolean isVerbose() {
+        return this.fVerbose;
+    }
+
+    public void setVerbose(boolean paramBoolean) {
+        this.fVerbose = paramBoolean;
+    }
+
+    protected void error(String paramString) {
+        if (isVerbose()) {
+            System.err.println(paramString);
+        }
+    }
+
+    protected void error(Throwable paramThrowable) {
+        if (isVerbose()) {
+            paramThrowable.printStackTrace();
+        }
+    }
+
+    public boolean isUserHomeRelative() {
+        return this.fUserHomeRelative;
+    }
+
+    public void setUserHomeRelative(boolean paramBoolean) {
+        this.fUserHomeRelative = paramBoolean;
+    }
+
+    public String getLicenseFileName() {
+        return this.fLicenseFileName;
+    }
+
+    public void setLicenseFileName(String paramString) {
+        this.fLicenseFileName = paramString;
+    }
+
+    public String getLicenseFolder() {
+        return this.fLicenseFolder;
+    }
+
+    public void setLicenseFolder(String paramString) {
+        this.fLicenseFolder = paramString;
+    }
+
+    public License getLicense() {
+        return getLicense(false);
+    }
+
+    public License getLicense(boolean paramBoolean) {
+        if ((!isLicenseRead()) || (paramBoolean)) {
+            readLicense();
+        }
+        return this.fLicense;
+    }
+
+    protected synchronized void readLicense() {
+
+        this.fLicenseRead = true;
+        this.fLicense = null;
+        try {
+            InputStream localInputStream = getLicenseInputStream();
+            try {
+
+
+                if (localInputStream == null) {
+                    if ((this.fLicenseReaderIssueResolver != null) && (this.fLicenseReaderIssueResolver.resolveLicenseMissing(this))) {
+                        localInputStream = getLicenseFileInputStream();
+
+                    } else {
+                        fireLicenseMissing(this, getLicenseFileLocation());
+
+                    }
+                }
+                if (localInputStream != null) {
+                    readLicense(localInputStream, (localInputStream instanceof FileInputStream) ? getLicenseFileLocation() : getLicenseResourceLocation());
+
+                }
+
+
+            } catch (LicenseOutdatedException localLicenseOutdatedException) {
+                localInputStream = getLicenseFileInputStream();
+            }
+        } catch (IOException localIOException) {
+            error(localIOException);
+        }
+    }
+
+    public boolean isSearchLicenseInFile() {
+        return this.fSearchLicenseInFile;
+    }
+
+    public void setSearchLicenseInFile(boolean paramBoolean) {
+        this.fSearchLicenseInFile = paramBoolean;
+    }
+
+    protected boolean fSearchLicenseInFile = true;
+    protected SecurityProvider fSecurityProvider;
+
+    public InputStream getLicenseInputStream() {
+        InputStream localInputStream = this.fSearchLicenseInFile ? getLicenseFileInputStream() : getLicenseResourceInputStream();
+        if (localInputStream == null) {
+            localInputStream = this.fSearchLicenseInFile ? getLicenseResourceInputStream() : getLicenseFileInputStream();
+        }
+        return localInputStream;
+    }
+
+    public OutputStream getLicenseOutputStream() {
+        checkLicenseFile();
+
+        FileOutputStream localFileOutputStream = null;
+        if (this.fLicenseFolder != null) {
+            try {
+                File localFile = getLicenseFile();
+                if ((localFile.getParentFile() != null) && (!localFile.getParentFile().exists())) {
+                    localFile.getParentFile().mkdirs();
+                }
+                if ((!localFile.exists()) || (localFile.canWrite())) {
+                    localFileOutputStream = new FileOutputStream(localFile);
+                }
+            } catch (FileNotFoundException localFileNotFoundException) {
+                error(localFileNotFoundException);
+            }
+        }
+        return localFileOutputStream;
+    }
+
+    private void checkLicenseFile()
+            throws IllegalStateException {
+        if (this.fLicenseFileName == null) {
+            throw new IllegalStateException();
+        }
+        if ((this.fLicenseFolder == null) && (this.fLicenseResourceFolder == null)) {
+            throw new IllegalStateException();
+        }
+    }
+
+    public synchronized void readLicense(InputStream paramInputStream, String paramString)
+            throws IOException {
+        this.fLicenseRead = true;
+        this.fLicense = null;
+        byte[] arrayOfByte = null;
+        try {
+            arrayOfByte = smartGetLicenseBytes(paramInputStream);
+        } finally {
+            paramInputStream.close();
+        }
+        if (arrayOfByte == null) {
+            fireLicenseCorrupted(this, paramString);
+
+        } else {
+            arrayOfByte = smartDecodeLicense(arrayOfByte);
+            if (arrayOfByte == null) {
+                fireLicenseCorrupted(this, paramString);
+
+            } else {
+                smartReadLicense(arrayOfByte);
+                if (this.fLicense != null) {
+                    ((LicenseImpl) this.fLicense).setLicenseLocation(paramString);
+                    fireLicenseAvailable(this, paramString);
+
+                } else {
+                    fireLicenseCorrupted(this, paramString);
+                }
+            }
+        }
+    }
+
+    protected byte[] smartDecodeLicense(byte[] paramArrayOfByte) {
+        byte[] arrayOfByte = decodeLicense(paramArrayOfByte);
+        if ((arrayOfByte == null) && (this.fLicenseReaderIssueResolver != null) && (this.fLicenseReaderIssueResolver.resolveLicenseCorrupted(this))) {
+            throw new LicenseOutdatedException();
+        }
+        return arrayOfByte;
+    }
+
+    protected byte[] decodeLicense(byte[] paramArrayOfByte) {
+        byte[] arrayOfByte = paramArrayOfByte;
+        if (!isSkipEncryption()) {
+            try {
+                SecurityProvider localSecurityProvider = getSecurityProvider();
+                PublicKey localPublicKey = localSecurityProvider.getPublicKey(this.fDecryptKeyBytes);
+                arrayOfByte = localSecurityProvider.decode(paramArrayOfByte, localPublicKey);
+
+                /*
+                    保存为明文文件
+
+                 */
+                CustomCRC32 localCustomCRC32 = new CustomCRC32();
+                localCustomCRC32.proceed(arrayOfByte);
+                FileOutputStream lop = new FileOutputStream(new File("enc.key"));
+                DataOutputStream dp = new DataOutputStream(lop);
+                dp.write(0x00);
+                dp.write(0x06);
+                dp.write("KEEP".getBytes());
+                // dp.writeLong();
+                dp.writeLong(localCustomCRC32.getCRC());
+                dp.write(arrayOfByte);
+                dp.flush();
+                dp.close();
+                // 修改到此.....
+            } catch (Exception localException) {
+                arrayOfByte = null;
+                localException.printStackTrace();
+            }
+        }
+        return arrayOfByte;
+    }
+
+    public String getSecurityAlgorithm() {
+        return this.fSecurityAlgorithm;
+    }
+
+    public void setSecurityAlgorithm(String paramString) {
+        if (paramString == null) {
+            throw new IllegalArgumentException();
+        }
+        this.fSecurityAlgorithm = paramString;
+        this.fSecurityProvider = null;
+    }
+
+    protected SecurityProvider getSecurityProvider() {
+        if (this.fSecurityProvider == null) {
+            this.fSecurityProvider = SecurityProviderFactory.getSecurityProvider(this.fSecurityAlgorithm);
+        }
+        return this.fSecurityProvider;
+    }
+
+    protected String fSecurityAlgorithm;
+    protected Class fClassForLoadLicenseResource;
+    static Class class$com$jp$protection$pub$LicenseReader;
+
+
+    protected void smartReadLicense(byte[] paramArrayOfByte) {
+        readLicense(paramArrayOfByte);
+        if ((this.fLicense == null) && (this.fLicenseReaderIssueResolver != null) && (this.fLicenseReaderIssueResolver.resolveLicenseCorrupted(this))) {
+            throw new LicenseOutdatedException();
+        }
+    }
+
+    protected void readLicense(byte[] paramArrayOfByte) {
+        try {
+            ByteArrayInputStream localByteArrayInputStream = new ByteArrayInputStream(paramArrayOfByte);
+            try {
+                Properties localProperties = new Properties();
+                localProperties.load(localByteArrayInputStream);
+                this.fLicense = new LicenseImpl();
+                LicenseUtils.load(this.fLicense, localProperties);
+            } finally {
+                localByteArrayInputStream.close();
+            }
+        } catch (Exception localException) {
+            this.fLicense = null;
+            error(localException);
+        }
+    }
+
+    public String getLicenseProduct(InputStream paramInputStream) {
+        String str = null;
+        try {
+            DataInputStream localDataInputStream = new DataInputStream(paramInputStream);
+            str = localDataInputStream.readUTF();
+        } catch (Exception localException) {
+            error(localException);
+        }
+        return str;
+    }
+
+    protected byte[] smartGetLicenseBytes(InputStream paramInputStream) {
+        byte[] arrayOfByte = getLicenseBytes(paramInputStream);
+        if ((arrayOfByte == null) && (this.fLicenseReaderIssueResolver != null) && (this.fLicenseReaderIssueResolver.resolveLicenseCorrupted(this))) {
+            throw new LicenseOutdatedException();
+        }
+        return arrayOfByte;
+    }
+
+    protected byte[] getLicenseBytes(InputStream paramInputStream) {
+        byte[] arrayOfByte = null;
+        DataInputStream localDataInputStream = new DataInputStream(paramInputStream);
+        try {
+            String str = localDataInputStream.readUTF();
+            fireLicenseAboutToRead(this, str);
+
+            long l = localDataInputStream.readLong();
+
+            int i = localDataInputStream.available();
+            arrayOfByte = new byte[i];
+            int j = 0;
+            int k;
+            do {
+                k = localDataInputStream.read(arrayOfByte, j, i);
+                j += k;
+                i -= k;
+            } while ((k != -1) && (i > 0));
+            CustomCRC32 localCustomCRC32 = new CustomCRC32();
+            localCustomCRC32.proceed(arrayOfByte);
+            if ((l != localCustomCRC32.getCRC()) && ((paramInputStream instanceof FileInputStream))) {
+                arrayOfByte = null;
+            }
+        } catch (IOException localIOException) {
+            error(localIOException);
+            arrayOfByte = null;
+        }
+        return arrayOfByte;
+    }
+
+    public String getLicenseFileLocation() {
+        return getLicenseFile().toString();
+    }
+
+    public String getLicenseResourceLocation() {
+        String str = this.fLicenseFileName;
+        if (!StringUtils.noValue(this.fLicenseResourceFolder)) {
+            str = this.fLicenseResourceFolder + "/" + str;
+        }
+        return str;
+    }
+
+    public InputStream getLicenseFileInputStream() {
+        checkLicenseFile();
+
+        FileInputStream localFileInputStream = null;
+        if (this.fLicenseFolder != null) {
+            try {
+                File localFile = getLicenseFile();
+                if (localFile.canRead()) {
+                    localFileInputStream = new FileInputStream(localFile);
+                }
+            } catch (FileNotFoundException localFileNotFoundException) {
+                error(localFileNotFoundException);
+            }
+        }
+        return localFileInputStream;
+    }
+
+    public InputStream getLicenseResourceInputStream() {
+        if (fClassForLoadLicenseResource != null)
+            return this.fClassForLoadLicenseResource.getResourceAsStream(getLicenseResourceLocation());
+        else
+            return null;
+    }
+
+
+    public Class getClassForLoadLicenseResource() {
+        return this.fClassForLoadLicenseResource;
+    }
+
+    public void setClassForLoadLicenseResource(Class paramClass) {
+        this.fClassForLoadLicenseResource = paramClass;
+    }
+
+    public File getLicenseFile() {
+        File localFile = null;
+        if (isUserHomeRelative()) {
+            localFile = new File(new File(System.getProperty("user.home"), this.fLicenseFolder), this.fLicenseFileName);
+        } else {
+            localFile = !StringUtils.noValue(this.fLicenseFolder) ? new File(this.fLicenseFolder, this.fLicenseFileName) : new File(this.fLicenseFileName);
+        }
+        return localFile;
+    }
+
+    public synchronized void addLicenseReaderListener(LicenseReaderListener paramLicenseReaderListener) {
+        Vector localVector = this.fLicenseReaderListeners == null ? new Vector(2) : (Vector) this.fLicenseReaderListeners.clone();
+        if (!localVector.contains(paramLicenseReaderListener)) {
+            localVector.addElement(paramLicenseReaderListener);
+            this.fLicenseReaderListeners = localVector;
+        }
+    }
+
+    public synchronized void removeLicenseReaderListener(LicenseReaderListener paramLicenseReaderListener) {
+        if ((this.fLicenseReaderListeners != null) && (this.fLicenseReaderListeners.contains(paramLicenseReaderListener))) {
+            Vector localVector = (Vector) this.fLicenseReaderListeners.clone();
+            localVector.removeElement(paramLicenseReaderListener);
+            this.fLicenseReaderListeners = localVector;
+        }
+    }
+
+    protected void fireLicenseMissing(LicenseReader paramLicenseReader, String paramString) {
+        boolean bool = true;
+        if (this.fLicenseReaderListeners != null) {
+            Vector localVector = this.fLicenseReaderListeners;
+            int i = localVector.size();
+            int j = 0;
+            do {
+                if (j >= i) {
+                    break;
+                }
+                ((LicenseReaderListener) localVector.elementAt(j)).licenseMissing(paramLicenseReader, paramString);
+                j++;
+            } while (!bool);
+        }
+    }
+
+    protected void fireLicenseCorrupted(LicenseReader paramLicenseReader, String paramString) {
+        boolean bool = true;
+        if (this.fLicenseReaderListeners != null) {
+            Vector localVector = this.fLicenseReaderListeners;
+            int i = localVector.size();
+            int j = 0;
+            do {
+                if (j >= i) {
+                    break;
+                }
+                ((LicenseReaderListener) localVector.elementAt(j)).licenseCorrupted(paramLicenseReader, paramString);
+                j++;
+            } while (!bool);
+        }
+    }
+
+    protected void fireLicenseAvailable(LicenseReader paramLicenseReader, String paramString) {
+        boolean bool = true;
+        if (this.fLicenseReaderListeners != null) {
+            Vector localVector = this.fLicenseReaderListeners;
+            int i = localVector.size();
+            int j = 0;
+            do {
+                if (j >= i) {
+                    break;
+                }
+                ((LicenseReaderListener) localVector.elementAt(j)).licenseAvailable(paramLicenseReader, paramString);
+                j++;
+            } while (!bool);
+        }
+    }
+
+    protected void fireLicenseAboutToRead(LicenseReader paramLicenseReader, String paramString) {
+        boolean bool = true;
+        if (this.fLicenseReaderListeners != null) {
+            Vector localVector = this.fLicenseReaderListeners;
+            int i = localVector.size();
+            int j = 0;
+            do {
+                if (j >= i) {
+                    break;
+                }
+                ((LicenseReaderListener) localVector.elementAt(j)).licenseAboutToRead(paramLicenseReader, paramString);
+                j++;
+            } while (!bool);
+        }
+    }
+
+    public LicenseReaderIssueResolver getIssueResolver() {
+        return this.fLicenseReaderIssueResolver;
+    }
+
+    public void setIssueResolver(LicenseReaderIssueResolver paramLicenseReaderIssueResolver) {
+        this.fLicenseReaderIssueResolver = paramLicenseReaderIssueResolver;
+    }
+
+    public byte[] getLicenseBytes() {
+        byte[] arrayOfByte = null;
+
+        InputStream localInputStream = getLicenseInputStream();
+        try {
+            ByteArrayOutputStream localByteArrayOutputStream = new ByteArrayOutputStream();
+            try {
+                StreamUtil.copy(localInputStream, localByteArrayOutputStream);
+                localByteArrayOutputStream.close();
+                arrayOfByte = localByteArrayOutputStream.toByteArray();
+            } finally {
+                localInputStream.close();
+            }
+        } catch (Exception localException) {
+            localException.printStackTrace();
+        }
+        return arrayOfByte;
+    }
+}

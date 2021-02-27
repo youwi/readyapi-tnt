@@ -1,0 +1,15 @@
+#
+#Sun Feb 28 00:00:45 CST 2021
+num=LicenseNumber
+prop[0].n=pr.cpu
+gp=-1
+typ=1
+pro=soapUI
+prop[0].v=20
+opt=0
+min=0
+ulm=0
+maj=1
+prop.count=1
+isd=1614441660000
+nuc=1
