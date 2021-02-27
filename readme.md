@@ -2,7 +2,9 @@
     本仓库不直接提供破解后的jar包
 
 ### 对应版本 readApi3.6
-  
+    soapui36.key  加密key(官方获取) 可以配合A方案
+    soapui36.key.txt 明文txt  (调试使用
+    soapui36-decode.key 明文Key(有crc检验),使用代码生成,配合C方案使用.
 
 ### 原理
   强制设置过期时间为2114年  
@@ -42,17 +44,15 @@
     直接修改字节码,难度太大
 
 ### 方案C 解密key,然后设置为不加密
-    使用以前破解soapui4.0一样的方案. 
+    使用以前破解soapui4.0一样的方案.  
     把com.jp.protection.pub.LicenseReader.fSkipEncryption=true
     然后把key解密
-    soapui36.key  加密key
-    soapui36.key.txt 明文txt
-    soapui36-decode.key 明文Key(有crc检验)
+
 
 ### build
     gradle build
-    gradle test 
-    gradle zipTheFile
+    gradle test        # 用的测试代码生成class文件
+    gradle zipTheFile   #zipTheFilePlanC #使用C方案.
     gradle copyToSystem
 
 ### 使用.
