@@ -13,8 +13,9 @@ sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
 dependencies {
-    //compileOnly fileTree(dir:'/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib',include:['*.jar'])
-    compile files('Protection-5.1.5-old.jar')
+    implementation fileTree(dir:'/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib',include:['*.jar'])
+    implementation fileTree(dir:'lib',include:['*.jar'])
+
     compile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     compile 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     implementation group: 'org.ow2.asm', name: 'asm', version: '7.1'
@@ -26,7 +27,7 @@ test {
     useJUnitPlatform()
 }
 task zipTheFile {
-    def zipName = 'Protection-5.1.5-old.jar'
+    def zipName = 'lib/Protection-5.1.5-old.jar'
     def fileName = 'com/jp/protection/pub/LicenseReader.class'
     def zipIn = new File(zipName)
     if (!zipIn.exists()) {
