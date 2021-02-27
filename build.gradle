@@ -52,7 +52,7 @@ task copyOldJar(type: Copy) {
 }
 
 task zipReadyApiUIJar {
-    classToZipFile("lib/ready-api-ui-3.6.0.jar", "com.smartbear.ready.module.ConcurrentXmlLoadProcess.class", "cxp.class")
+    classToZipFile("lib/ready-api-ui-3.6.0.jar", "com/smartbear/ready/module/ConcurrentXmlLoadProcess.class", "cxp.class")
 }
 
 void classToZipFile(classFileName) {
@@ -99,10 +99,11 @@ void classToZipFile(zipName, classFullName, tmpClassFileName) {
         }
         zos.close()
         zip.close()
-        zipTemp.renameTo(zipName.replace("\\.jar", "-crack.jar"))
+        zipTemp.renameTo(zipName.replace("lib/","").replace("\\.jar", "-crack.jar"))
 
     } catch (e) {
-        System.err.println(e.getCause())
+        System.err.println("${zipName} ${classFullName}"+e.getCause()+" "+e.getMessage())
+        e.printStackTrace()
     }
 
 }
