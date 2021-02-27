@@ -55,7 +55,7 @@ public class PlanA {
      * @param craString 替换源
      * @param matchString  搜索要替换的函数
      */
-    String replaceStringAt(String oriString, String craString, String matchString) {
+    static String replaceStringAt(String oriString, String craString, String matchString) {
         String[] oriStrings = oriString.split("\\}");
         String[] craStrings = craString.split("\\}");
         StringBuilder outString = new StringBuilder();
@@ -89,7 +89,7 @@ public class PlanA {
      * @param className
      * @throws IOException
      */
-    void javaToAsmSource(String className) throws IOException {
+    static void javaToAsmSource(String className) throws IOException {
         ASMifier sourcePrinter = new ASMifier();
         String[] nameList = className.split("\\.");
         File genFile = new File("src/test/java/" + nameList[nameList.length - 1] + "Dump.java");
