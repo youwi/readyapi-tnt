@@ -32,3 +32,8 @@
             }
         }
 ```
+### build
+    gradle build
+    gradle test 
+    gradle zipTheFile
+    gradle copyToSystem
