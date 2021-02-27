@@ -42,7 +42,10 @@ public class PlanA {
         out = out.replace("package asm.com.jp.protection.pub", "");
         out = out.trim();
 
-        File outFile = new File("src/test/java/LicenseReaderDumpMix.java");
+        stringToFile(out,"src/test/java/LicenseReaderDumpMix.java");
+    }
+    static void stringToFile(String out,String fileName) throws IOException {
+        File outFile = new File(fileName);
         if (outFile.exists()) outFile.delete();
         FileOutputStream fileOutputStream = new FileOutputStream(outFile);
         fileOutputStream.write(out.getBytes());

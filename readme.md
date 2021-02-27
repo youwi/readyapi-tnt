@@ -66,3 +66,7 @@
 ### 远程调试
     在readapi.sh 中添加参数 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005,  
     然后打开idea可以远程调试
+
+## 闪退解决方案:
+    使用了反射来调用了System.exit()
+    readyapi-ui.jar:com.smartbear.ready.module.ConcurrentXmlLoadProcess

@@ -14,13 +14,16 @@ targetCompatibility = 1.7
 
 dependencies {
     //compileOnly fileTree(dir:'/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib',include:['*.jar'])
-    implementation fileTree(dir:'lib',include:['*.jar'])
+    implementation fileTree(dir: 'lib', include: ['*.jar'])
 
     compile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     compile 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     implementation group: 'org.ow2.asm', name: 'asm', version: '7.1'
     implementation group: 'org.ow2.asm', name: 'asm-util', version: '7.1'
     implementation group: 'org.ow2.asm', name: 'asm-commons', version: '7.1'
+
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+
 }
 
 test {
@@ -37,53 +40,70 @@ task zipTheFilePlanC {
     classToZipFile("FakePlanC.class")
 }
 
+
 task copyToSystem(type: Copy) {
-    from 'Protection-5.1.5-crack.jar'
+    from 'lib/Protection-5.1.5-crack.jar'
     into '/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib/'
 }
 
 task copyOldJar(type: Copy) {
-    from 'lib/Protection-5.1.5-old.jar'
+    from 'lib/Protection-5.1.5.jar'
     into '/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib/'
+}
+
+task zipReadyApiUIJar {
+    classToZipFile("lib/ready-api-ui-3.6.0.jar", "com.smartbear.ready.module.ConcurrentXmlLoadProcess.class", "cxp.class")
+}
+
+void classToZipFile(classFileName) {
+    classToZipFile("lib/Protection-5.1.5.jar", "com/jp/protection/pub/LicenseReader.class", classFileName)
 }
 /**
  * 复制class文件到zip文件中,替换LicenseReader.class
- * 默认路径为:lib/Protection-5.1.5-old.jar
+ * 默认路径为:lib/Protection-5.1.5.jar
  * 默认文件名:Protection-5.1.5-crack.jar
  */
-void classToZipFile(className){
-    def zipName = 'lib/Protection-5.1.5-old.jar'
-    def fileName = 'com/jp/protection/pub/LicenseReader.class'
-    def zipIn = new File(zipName)
-    if (!zipIn.exists()) {
-        println "原文件不存在"
-    }
-    def zip = new ZipFile(zipIn)
-    def zipTemp = File.createTempFile('Protection-5.1.5', '.jar', new File('./'))
-    zipTemp.deleteOnExit()
-    def zos = new ZipOutputStream(new FileOutputStream(zipTemp))
+void classToZipFile(zipName, classFullName, tmpClassFileName) {
+    try {
 
-    for (zipEntry in zip.entries()) {
-        def input = zip.getInputStream(zipEntry)
-        if (!zipEntry.name.equalsIgnoreCase(fileName)) {
-            zos.putNextEntry(zipEntry)
-            zos << input.bytes
-        } else {
-            zos.putNextEntry(new ZipEntry(fileName))
-            def dir = sourceSets.main.output.classesDirs[0].getPath()
-            def classFile = new File(className)
-            if (classFile.exists()) {
-                def newIs = new FileInputStream(classFile)
-                zos << newIs.bytes
-            }else{
-                println "Fake.class文件先由测试代码生成"
-            }
+        def zipIn = new File(zipName)
+        if (!zipIn.exists()) {
+            println zipName + "文件不存在"
         }
-        zos.closeEntry()
+        if (!new File(tmpClassFileName).exists()) {
+            println tmpClassFileName + "文件不存在"
+            return
+        }
+        def zip = new ZipFile(zipIn)
+        def zipTemp = File.createTempFile('tmp', '.jar', new File('./'))
+        zipTemp.deleteOnExit()
+        def zos = new ZipOutputStream(new FileOutputStream(zipTemp))
+
+        for (zipEntry in zip.entries()) {
+            def input = zip.getInputStream(zipEntry)
+            if (!zipEntry.name.equalsIgnoreCase(classFullName)) {
+                zos.putNextEntry(zipEntry)
+                zos << input.bytes
+            } else {
+                zos.putNextEntry(new ZipEntry(classFullName))
+                //def dir = sourceSets.main.output.classesDirs[0].getPath()
+                def classFile = new File(tmpClassFileName)
+                if (classFile.exists()) {
+                    def newIs = new FileInputStream(classFile)
+                    zos << newIs.bytes
+                } else {
+                    println "class文件先由测试代码生成"
+                }
+            }
+            zos.closeEntry()
+        }
+        zos.close()
+        zip.close()
+        zipTemp.renameTo(zipName.replace("\\.jar", "-crack.jar"))
+
+    } catch (e) {
+        System.err.println(e.getCause())
     }
 
-    zos.close()
-    zip.close()
-    zipTemp.renameTo("Protection-5.1.5-crack.jar")
 }
 

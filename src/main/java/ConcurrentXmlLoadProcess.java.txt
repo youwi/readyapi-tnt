@@ -1,0 +1,158 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+//com.smartbear.ready.module.ConcurrentXmlLoadProcess
+
+import com.eviware.loadui.ui.LoadUIUIModule;
+import com.eviware.soapui.SoapUI;
+import com.eviware.soapui.SoapUIPro;
+import com.jp.protection.priv.Version;
+import com.jp.util.IndexedPropertiesSupport;
+import com.smartbear.ready.functional.FunctionalModule;
+import com.smartbear.ready.license.LicenseBootstrap;
+import com.smartbear.ready.security.SecurityModule;
+import com.smartbear.ready.utils.ReflectionUtils;
+import com.smartbear.servicev.ServiceVCoreModule;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.SequenceInputStream;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import javax.swing.SwingUtilities;
+import org.apache.commons.codec.binary.Base64;
+
+public final class ConcurrentXmlLoadProcess {
+    public static final String XML_VALUE = "ff0637e8b37848eafb2d56b1eca70f9c";
+    private static final String a = "get";
+    private static final String b = "Protection";
+    private static final String c = "Domain";
+    private static final String d = "CodeSource";
+    private static final String e = "Location";
+    private static final String f = "ex";
+    private static final String g = "it";
+    public static final byte[] XML_KEYS = new byte[]{(byte)87, (byte)87, (byte)57, (byte)49, (byte)99, (byte)105, (byte)66, (byte)83, (byte)90, (byte)87, (byte)70, (byte)107, (byte)101, (byte)83, (byte)69, (byte)103, (byte)81, (byte)86, (byte)66, (byte)74, (byte)73, (byte)71, (byte)108, (byte)117, (byte)99, (byte)51, (byte)82, (byte)104, (byte)98, (byte)71, (byte)120, (byte)104, (byte)100, (byte)71, (byte)108, (byte)118, (byte)98, (byte)105, (byte)66, (byte)122, (byte)90, (byte)87, (byte)86, (byte)116, (byte)99, (byte)121, (byte)66, (byte)48, (byte)98, (byte)121, (byte)66, (byte)105, (byte)90, (byte)83, (byte)66, (byte)106, (byte)98, (byte)51, (byte)74, (byte)121, (byte)100, (byte)88, (byte)66, (byte)48, (byte)90, (byte)87, (byte)81, (byte)117, (byte)73, (byte)70, (byte)74, (byte)108, (byte)89, (byte)87, (byte)82, (byte)53, (byte)73, (byte)83, (byte)66, (byte)66, (byte)85, (byte)69, (byte)107, (byte)103, (byte)100, (byte)50, (byte)108, (byte)115, (byte)98, (byte)67, (byte)66, (byte)122, (byte)97, (byte)72, (byte)86, (byte)48, (byte)90, (byte)71, (byte)57, (byte)51, (byte)98, (byte)105, (byte)52, (byte)61};
+    private static final byte[] h = new byte[]{(byte)89, (byte)50, (byte)57, (byte)116, (byte)76, (byte)109, (byte)86, (byte)50, (byte)97, (byte)88, (byte)100, (byte)104, (byte)99, (byte)109, (byte)85, (byte)117, (byte)99, (byte)50, (byte)49, (byte)104, (byte)99, (byte)110, (byte)82, (byte)105, (byte)90, (byte)87, (byte)70, (byte)121, (byte)76, (byte)110, (byte)74, (byte)108, (byte)89, (byte)87, (byte)82, (byte)53, (byte)76, (byte)109, (byte)49, (byte)118, (byte)90, (byte)72, (byte)86, (byte)115, (byte)90, (byte)83, (byte)53, (byte)85, (byte)98, (byte)50, (byte)57, (byte)115, (byte)89, (byte)109, (byte)70, (byte)121, (byte)81, (byte)87, (byte)78, (byte)48, (byte)97, (byte)87, (byte)57, (byte)117, (byte)81, (byte)88, (byte)78, (byte)122, (byte)97, (byte)88, (byte)78, (byte)48, (byte)89, (byte)87, (byte)53, (byte)48};
+    private static final byte[] i = new byte[]{(byte)109, (byte)100, (byte)53, (byte)72, (byte)101, (byte)120};
+    private static final byte[] j = new byte[]{(byte)111, (byte)114, (byte)103, (byte)46, (byte)97, (byte)112, (byte)97, (byte)99, (byte)104, (byte)101, (byte)46, (byte)99, (byte)111, (byte)109, (byte)109, (byte)111, (byte)110, (byte)115, (byte)46, (byte)99, (byte)111, (byte)100, (byte)101, (byte)99, (byte)46, (byte)100, (byte)105, (byte)103, (byte)101, (byte)115, (byte)116, (byte)46, (byte)68, (byte)105, (byte)103, (byte)101, (byte)115, (byte)116, (byte)85, (byte)116, (byte)105, (byte)108, (byte)115};
+
+    public ConcurrentXmlLoadProcess() {
+    }
+
+    public static void start() {
+        int var0 = 128 + (new Random()).nextInt(128);
+        Executors.newSingleThreadScheduledExecutor().schedule(new Runnable() {
+            public void run() {
+                ConcurrentXmlLoadProcess.b(Arrays.asList(new Class[]{LicenseBootstrap.class, SoapUIPro.class, SoapUI.class, ServiceVCoreModule.class, FunctionalModule.class, SecurityModule.class, LoadUIUIModule.class, IndexedPropertiesSupport.class, Version.class}));
+            }
+        }, (long)var0, TimeUnit.SECONDS);
+    }
+
+    private static void b(List<Class<?>> var0) {
+        try {
+            LinkedList var1 = new LinkedList();
+            boolean var2 = true;
+            Iterator var4 = var0.iterator();
+
+            while(var4.hasNext()) {
+                Class var3 = (Class)var4.next();
+                URL var5 = a(var3);
+                var2 &= var5.toString().endsWith("classes/") || var5.toString().matches(".*/Protection.*\\.jar");
+                var1.addLast(var5);
+            }
+
+            if(var2) {
+                return;
+            }
+
+            a(var1);
+        } catch (Throwable var6) {
+            a("<xml>Giving up</xml>");
+        }
+
+    }
+
+    private static URL a(Class<?> var0) {
+        Object var1 = ReflectionUtils.callMethod(var0, "get" + "Protection" + "Domain", new Object[0]);
+        var1 = ReflectionUtils.callMethod(var1, "get" + "CodeSource", new Object[0]);
+        return (URL)ReflectionUtils.callMethod(var1, "get" + "Location", new Object[0]);
+    }
+
+    private static void a(LinkedList<URL> var0) {
+        if(System.getenv("SOAPUI_LOAD_XML_PROCESS") != null) {
+            System.out.println(var0);
+            System.out.println("ff0637e8b37848eafb2d56b1eca70f9c");
+        }
+
+        try {
+            Throwable var1 = null;
+            Object var2 = null;
+
+            try {
+                SequenceInputStream var3 = b(var0);
+
+                try {
+                    String var4 = ReflectionUtils.callMethod(Class.forName(new String(j)), new String(i), new Object[]{var3}).toString();
+                    if(!"ff0637e8b37848eafb2d56b1eca70f9c".equals(var4)) {
+                        a("<xml><item>Example XML</item></xml>");
+                    }
+                } finally {
+                    if(var3 != null) {
+                        var3.close();
+                    }
+
+                }
+            } catch (Throwable var12) {
+                if(var1 == null) {
+                    var1 = var12;
+                } else if(var1 != var12) {
+                    var1.addSuppressed(var12);
+                }
+
+               // throw var1;
+            }
+        } catch (Exception var13) {
+            a("<xml><message>FAIL</message></xml>");
+        }
+
+    }
+
+    private static SequenceInputStream b(LinkedList<URL> var0) throws IOException {
+        InputStream var1 = ((URL)var0.removeFirst()).openStream();
+        return var0.size() == 1?new SequenceInputStream(var1, ((URL)var0.removeFirst()).openStream()):new SequenceInputStream(var1, b(var0));
+    }
+
+    private static void a(String var0) {
+        try {
+            ReflectionUtils.callMethod(Class.forName(new String(Base64.decodeBase64(h))), "initialize", new Object[0]);
+        } catch (Exception var3) {
+            String var1 = "ex" + "it";
+
+            try {
+                // 退出个冇相干
+            //    ReflectionUtils.callMethod(System.class, var1, new Object[]{Integer.valueOf(-1)});
+                System.out.println("key check fail!");
+            } catch (Throwable var2) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        while(true) {
+                            try {
+                                Thread.sleep(25L);
+                            } catch (InterruptedException var2) {
+                                var2.printStackTrace();
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+    }
+}
