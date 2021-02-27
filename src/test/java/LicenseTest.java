@@ -152,10 +152,7 @@ public class LicenseTest {
         //readyAPI3.6
         keyToTextByName("soapui36.key");
     }
-    @Test
-    public void soapUiKey4Test() throws IOException {
-        keyToTextByName("soapui4.key");
-    }
+
     /**
      * 把加密字节保存为key文件,有检验的
      *

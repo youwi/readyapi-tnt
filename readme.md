@@ -46,8 +46,7 @@
 ### 方案C 解密key,然后设置为不加密
     使用以前破解soapui4.0一样的方案.  
     把com.jp.protection.pub.LicenseReader.fSkipEncryption=true
-    然后把key解密
-
+    然后把key解密,使用明文key
 
 ### build
     gradle build
@@ -59,3 +58,7 @@
   1 按官方步骤获取试用key  
   2 使用代码生成fake.class  
   3 用脚本替换jar包中的class文件
+  
+### 远程调试
+    在readapi.sh 中添加参数 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005,  
+    然后打开idea可以远程调试
