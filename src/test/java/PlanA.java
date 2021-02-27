@@ -29,42 +29,57 @@ public class PlanA {
         javaToAsmSource("com.jp.protection.pub.LicenseReader");
         javaToAsmSource("com.jp.protection.pub.LicenseReaderCrack");
 
-        String oriString= readFileToString("src/test/java/LicenseReaderDump.java");
-        String craString= readFileToString("src/test/java/LicenseReaderCrackDump.java");
+        String oriString = readFileToString("src/test/java/LicenseReaderDump.java");
+        String craString = readFileToString("src/test/java/LicenseReaderCrackDump.java");
 
-        String[] oriStrings=oriString.split("\\}");
-        String[] craStrings=craString.split("\\}");
-        String matchString="ACC_PROTECTED, \"readLicense\", \"([B)V\", null, null";
-        StringBuilder outString=new StringBuilder();
+        String matchString = "ACC_PROTECTED, \"readLicense\", \"([B)V\", null, null";
 
-        for(int i=0;i<oriStrings.length;i++){
-            String tmpString=oriStrings[i];
-            if(tmpString.contains(matchString)){
-                for(String repString:craStrings){
-                    if(repString.contains(matchString)){
-                        oriStrings[i]=repString;
-                        System.out.println("这是第x行"+i);
+        String out = replaceStringAt(oriString, craString, matchString);
+
+        out = out.replace("LicenseReaderCrack", "LicenseReader");
+        out = out.replace("public class LicenseReaderDump implements", "public class LicenseReaderDumpMix implements");
+        out = out.replace("package asm.com.jp.protection.pub", "");
+        out = out.trim();
+        File outFile = new File("src/test/java/LicenseReaderDumpMix.java");
+        if (outFile.exists()) outFile.delete();
+        FileOutputStream fileOutputStream = new FileOutputStream(outFile);
+        fileOutputStream.write(out.getBytes());
+        fileOutputStream.flush();
+    }
+
+    /**
+     * 按分组替换函数
+     *
+     * @param ori
+     * @param cra
+     * @param search
+     */
+    String replaceStringAt(String oriString, String craString, String matchString) {
+        String[] oriStrings = oriString.split("\\}");
+        String[] craStrings = craString.split("\\}");
+        StringBuilder outString = new StringBuilder();
+
+        for (int i = 0; i < oriStrings.length; i++) {
+            String tmpString = oriStrings[i];
+            if (tmpString.contains(matchString)) {
+                for (String repString : craStrings) {
+                    if (repString.contains(matchString)) {
+                        oriStrings[i] = repString;
+                        //System.out.println("这是第x行" + i);
                         break;
                     }
                 }
             }
         }
-        for(int i=0;i<oriStrings.length;i++){
-            String tmpString=oriStrings[i];
+        for (int i = 0; i < oriStrings.length; i++) {
+            String tmpString = oriStrings[i];
             outString.append(tmpString);
-            if(i>0){
+            if (i > 0) {
                 outString.append("}");
-            };
+            }
+            ;
         }
-        String out=outString.toString().replace("LicenseReaderCrack","LicenseReader");
-        out=out.replace("public class LicenseReaderDump implements","public class LicenseReaderDumpMix implements");
-        out=out.replace("package asm.com.jp.protection.pub","");
-        out=out.trim();
-        File outFile=new File("src/test/java/LicenseReaderDumpMix.java");
-        if(outFile.exists()) outFile.delete();
-        FileOutputStream fileOutputStream = new FileOutputStream(outFile);
-        fileOutputStream.write(out.getBytes());
-        fileOutputStream.flush();
+        return outString.toString();
     }
 
     /**
@@ -91,13 +106,14 @@ public class PlanA {
 
     /**
      * 把文件读取为字符串,效果和 FileUtils.readFileToString一样
+     *
      * @param filePath
      * @return
      * @throws IOException
      */
-     public static String readFileToString(String filePath) throws IOException {
-         StringBuffer fileData = new StringBuffer();
-         BufferedReader reader = new BufferedReader(new FileReader(filePath));
+    public static String readFileToString(String filePath) throws IOException {
+        StringBuffer fileData = new StringBuffer();
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
         char[] buf = new char[1024];
         int numRead = 0;
         while ((numRead = reader.read(buf)) != -1) {
@@ -107,7 +123,6 @@ public class PlanA {
         reader.close();
         return fileData.toString();
     }
-
 
 
     @Test

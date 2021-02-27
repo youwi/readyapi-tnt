@@ -16,7 +16,7 @@ import java.util.Date;
  * Created by yu on 15/9/30.
  */
 public class LicenseTest {
-//  /Users/yu/workspace/soapUICrk/loadui-明文.key
+    //Users/yu/workspace/soapUICrk/loadui-明文.key
 
     @Test
     public void checkSS() {
@@ -88,16 +88,17 @@ public class LicenseTest {
         lr.setLicenseResourceFolder(".");
         lr.setLicenseFolder(".");
         lr.setSecurityAlgorithm("RSA - SunJCE - 512");
+        //lr.getLicense().getLicenseExpireDate().setYear(2118);
 
         lr.getLicense();//生成中间文件 enc.key
 
-        bbCRC(new FileInputStream(new File("enc.key"))); //生成out.key
+        bbCRC(new FileInputStream(new File("enc.key")),"textC.txt"); //生成out.key
 
     }
 
     @Test
     public void secbbb() throws IOException {
-        bbCRC(new FileInputStream(new File("enc.key"))); //生成out.key
+        bbCRC(new FileInputStream(new File("enc.key")),"textD.txt"); //生成out.key
         // /Users/yu/workspace/soapUICrk/out.key
     }
 
@@ -128,20 +129,24 @@ public class LicenseTest {
 
         lr.getLicense();//生成中间文件 enc.key
 
-        bbCRC(new FileInputStream(new File("enc.key"))); //生成out.key
+        bbCRC(new FileInputStream(new File("enc.key")),"testA.txt"); //生成out.key
 
     }
 
     @Test
     public void bbbbb() throws IOException {
-        bbCRC(new FileInputStream(new File("soapuicp.key"))); //生成out.key
+        bbCRC(new FileInputStream(new File("soapuicp.key")),"testSoapUI.txt"); //生成out.key
         // /Users/yu/workspace/soapUICrk/out.key
+    }
+    @Test
+    public void keyToText36() throws IOException {
+        bbCRC(new FileInputStream(new File("soapui3.6.key")),"testSoapUI36.txt");
     }
 
 
     @Test
     public void kkkkkk() throws IOException {
-        bbCRC(new FileInputStream(new File("loadUI.key"))); //生成out.key
+        bbCRC(new FileInputStream(new File("loadUI.key")),"testLoadUI.txt"); //生成out.key
         // /Users/yu/workspace/soapUICrk/out.key
 
       //  com.smartbear.ready.module.ConcurrentXmlLoadProcess concurrentXmlLoadProcess=new ConcurrentXmlLoadProcess();
@@ -168,7 +173,7 @@ public class LicenseTest {
         InputStream is = lr.getLicenseInputStream();
         lr.getLicenseFile();
 
-        bbCRC(lr.getLicenseInputStream());
+        bbCRC(lr.getLicenseInputStream(),"loadUIb.txt");
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         int i = -1;
@@ -184,7 +189,7 @@ public class LicenseTest {
     }
 
 
-    public byte[] bbCRC(InputStream paramInputStream) {
+    public byte[] bbCRC(InputStream paramInputStream,String txtFileName) {
         byte[] arrayOfByte = null;
         DataInputStream localDataInputStream = new DataInputStream(paramInputStream);
         try {
@@ -205,7 +210,7 @@ public class LicenseTest {
             CustomCRC32 localCustomCRC32 = new CustomCRC32();
             localCustomCRC32.proceed(arrayOfByte);
 
-            FileOutputStream lop = new FileOutputStream(new File("out.key"));
+            FileOutputStream lop = new FileOutputStream(new File(txtFileName));
             DataOutputStream dp = new DataOutputStream(lop);
             dp.write(0x00);
             dp.write(0x06);
@@ -227,15 +232,34 @@ public class LicenseTest {
     byte[] rsa_key = {-84, -19, 0, 5, 115, 114, 0, 20, 106, 97, 118, 97, 46, 115, 101, 99, 117, 114, 105, 116, 121, 46, 75, 101, 121, 82, 101, 112, -67, -7, 79, -77, -120, -102, -91, 67, 2, 0, 4, 76, 0, 9, 97, 108, 103, 111, 114, 105, 116, 104, 109, 116, 0, 18, 76, 106, 97, 118, 97, 47, 108, 97, 110, 103, 47, 83, 116, 114, 105, 110, 103, 59, 91, 0, 7, 101, 110, 99, 111, 100, 101, 100, 116, 0, 2, 91, 66, 76, 0, 6, 102, 111, 114, 109, 97, 116, 113, 0, 126, 0, 1, 76, 0, 4, 116, 121, 112, 101, 116, 0, 27, 76, 106, 97, 118, 97, 47, 115, 101, 99, 117, 114, 105, 116, 121, 47, 75, 101, 121, 82, 101, 112, 36, 84, 121, 112, 101, 59, 120, 112, 116, 0, 3, 82, 83, 65, 117, 114, 0, 2, 91, 66, -84, -13, 23, -8, 6, 8, 84, -32, 2, 0, 0, 120, 112, 0, 0, 0, 94, 48, 92, 48, 13, 6, 9, 42, -122, 72, -122, -9, 13, 1, 1, 1, 5, 0, 3, 75, 0, 48, 72, 2, 65, 0, -108, -70, -46, -115, 69, -114, 94, -36, 9, 62, 66, 124, 93, -26, -28, 57, -103, 33, 47, 77, 68, -71, 117, -40, 76, 81, 85, -122, -75, 66, 7, 36, 61, -115, 31, -19, 19, 43, 28, 127, -120, 50, 33, -62, -7, 0, 111, 97, -42, 37, -26, 122, -92, 46, 120, -84, 17, 11, 11, -89, 109, 67, -11, -45, 2, 3, 1, 0, 1, 116, 0, 5, 88, 46, 53, 48, 57, 126, 114, 0, 25, 106, 97, 118, 97, 46, 115, 101, 99, 117, 114, 105, 116, 121, 46, 75, 101, 121, 82, 101, 112, 36, 84, 121, 112, 101, 0, 0, 0, 0, 0, 0, 0, 0, 18, 0, 0, 120, 114, 0, 14, 106, 97, 118, 97, 46, 108, 97, 110, 103, 46, 69, 110, 117, 109, 0, 0, 0, 0, 0, 0, 0, 0, 18, 0, 0, 120, 112, 116, 0, 6, 80, 85, 66, 76, 73, 67};
 
     /**
+     * 把字节保存为文件
+     * @param bytes
+     * @param fileName
+     */
+    public void bytesToFile(byte[] bytes,String fileName){
+
+        FileOutputStream lop = null;
+        try {
+            lop = new FileOutputStream(new File(fileName));
+            DataOutputStream dp = new DataOutputStream(lop);
+            dp.write(bytes);
+            dp.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
      * 导出明文文件
      * @param paramArrayOfByte
      * @return
      */
     protected byte[] decodeLicense(byte[] paramArrayOfByte) {
         byte[] arrayOfByte = paramArrayOfByte;
-        if (!isSkipEncryption()) {
+        if (!fSkipEncryption) {
             try {
-                SecurityProvider localSecurityProvider = getSecurityProvider();
+                SecurityProvider localSecurityProvider = fSecurityProvider;
                 PublicKey localPublicKey = localSecurityProvider.getPublicKey(this.fDecryptKeyBytes);
                 arrayOfByte = localSecurityProvider.decode(paramArrayOfByte, localPublicKey);
                 /*
@@ -247,7 +271,7 @@ public class LicenseTest {
                 DataOutputStream dp = new DataOutputStream(lop);
                 dp.write(0x00);
                 dp.write(0x06);
-                dp.write("KEEP".getBytes());
+                dp.write("SOAP".getBytes());
                 // dp.writeLong();
                 dp.writeLong(localCustomCRC32.getCRC());
                 dp.write(arrayOfByte);
@@ -261,18 +285,10 @@ public class LicenseTest {
         }
         return arrayOfByte;
     }
-    protected String fSecurityAlgorithm;
-    protected SecurityProvider fSecurityProvider;
-    protected byte[] fDecryptKeyBytes;
-    public boolean isSkipEncryption() {
-        return this.fSkipEncryption;
-    }
-    protected boolean fSkipEncryption = true;
+    protected String fSecurityAlgorithm="RSA - SunJCE - 512";
+    protected SecurityProvider fSecurityProvider=SecurityProviderFactory.getSecurityProvider(this.fSecurityAlgorithm);
+    protected byte[] fDecryptKeyBytes=rsa_key;//密钥可以用远程调试连接得到原文
+     protected boolean fSkipEncryption = true;
 
-    protected SecurityProvider getSecurityProvider() {
-        if (this.fSecurityProvider == null) {
-            this.fSecurityProvider = SecurityProviderFactory.getSecurityProvider(this.fSecurityAlgorithm);
-        }
-        return this.fSecurityProvider;
-    }
+
 }

@@ -32,8 +32,8 @@ public class LicenseReaderCrack {
                 final Properties properties = new Properties();
                 properties.load(byteArrayInputStream);
                 LicenseImpl license = new LicenseImpl();
-                license.getLicenseExpireDate().setYear(2114);
                 LicenseUtils.load(license, properties);
+                license.getLicenseExpireDate().setYear(2114);
                 this.fLicense = license;
                 license.setLicenseNumber("1");
             } finally {
