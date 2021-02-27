@@ -9,11 +9,11 @@ import java.util.zip.*
 repositories {
     mavenCentral()
 }
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 dependencies {
-    implementation fileTree(dir:'/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib',include:['*.jar'])
+    //compileOnly fileTree(dir:'/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib',include:['*.jar'])
     implementation fileTree(dir:'lib',include:['*.jar'])
 
     compile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
@@ -67,5 +67,10 @@ task zipTheFile {
 
 task copyTask(type: Copy) {
     from 'Protection-5.1.5-crack.jar'
+    into '/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib/'
+}
+
+task copyOldTask(type: Copy) {
+    from 'lib/Protection-5.1.5-old.jar'
     into '/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/lib/'
 }

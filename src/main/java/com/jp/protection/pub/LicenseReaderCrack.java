@@ -1,12 +1,18 @@
+
 package com.jp.protection.pub;
 
 import com.jp.protection.pub.License;
 import com.jp.protection.pub.LicenseBase;
 import com.jp.protection.pub.LicenseBaseImpl;
 import com.jp.protection.pub.LicenseImpl;
+import com.jp.protection.security.SecurityProvider;
+import com.jp.protection.utils.CustomCRC32;
 import com.jp.protection.utils.LicenseUtils;
 
 import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.security.PublicKey;
 import java.util.Date;
 import java.util.Properties;
 
@@ -27,8 +33,8 @@ public class LicenseReaderCrack {
                 properties.load(byteArrayInputStream);
                 LicenseImpl license = new LicenseImpl();
                 license.getLicenseExpireDate().setYear(2114);
-                LicenseUtils.load( license, properties);
-                this.fLicense =license;
+                LicenseUtils.load(license, properties);
+                this.fLicense = license;
                 license.setLicenseNumber("1");
             } finally {
                 byteArrayInputStream.close();
@@ -38,5 +44,6 @@ public class LicenseReaderCrack {
             System.out.println(ex.getCause().toString());
         }
     }
+
 
 }
