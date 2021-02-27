@@ -36,10 +36,12 @@ public class PlanA {
 
         String out = replaceStringAt(oriString, craString, matchString);
 
+        // 修正类型不一致
         out = out.replace("LicenseReaderCrack", "LicenseReader");
         out = out.replace("public class LicenseReaderDump implements", "public class LicenseReaderDumpMix implements");
         out = out.replace("package asm.com.jp.protection.pub", "");
         out = out.trim();
+
         File outFile = new File("src/test/java/LicenseReaderDumpMix.java");
         if (outFile.exists()) outFile.delete();
         FileOutputStream fileOutputStream = new FileOutputStream(outFile);
@@ -48,11 +50,10 @@ public class PlanA {
     }
 
     /**
-     * 按分组替换函数
-     *
-     * @param ori
-     * @param cra
-     * @param search
+     * 搜索并替换asm代码中的函数
+     * @param oriString 代码源
+     * @param craString 替换源
+     * @param matchString  搜索要替换的函数
      */
     String replaceStringAt(String oriString, String craString, String matchString) {
         String[] oriStrings = oriString.split("\\}");
