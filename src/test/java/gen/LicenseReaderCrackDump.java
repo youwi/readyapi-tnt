@@ -9,6 +9,7 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.RecordComponentVisitor;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.TypePath;
 public class LicenseReaderCrackDump implements Opcodes {
@@ -17,6 +18,7 @@ public static byte[] dump () throws Exception {
 
 ClassWriter classWriter = new ClassWriter(0);
 FieldVisitor fieldVisitor;
+RecordComponentVisitor recordComponentVisitor;
 MethodVisitor methodVisitor;
 AnnotationVisitor annotationVisitor0;
 
@@ -117,6 +119,7 @@ methodVisitor.visitLineNumber(41, label13);
 methodVisitor.visitJumpInsn(GOTO, label5);
 methodVisitor.visitLabel(label2);
 methodVisitor.visitLineNumber(40, label2);
+methodVisitor.visitFrame(Opcodes.F_FULL, 3, new Object[] {"com/jp/protection/pub/LicenseReaderCrack", "[B", "java/io/ByteArrayInputStream"}, 1, new Object[] {"java/lang/Throwable"});
 methodVisitor.visitVarInsn(ASTORE, 5);
 methodVisitor.visitLabel(label3);
 methodVisitor.visitVarInsn(ALOAD, 2);
@@ -128,10 +131,12 @@ methodVisitor.visitVarInsn(ALOAD, 5);
 methodVisitor.visitInsn(ATHROW);
 methodVisitor.visitLabel(label5);
 methodVisitor.visitLineNumber(45, label5);
+methodVisitor.visitFrame(Opcodes.F_CHOP,1, null, 0, null);
 Label label15 = new Label();
 methodVisitor.visitJumpInsn(GOTO, label15);
 methodVisitor.visitLabel(label6);
 methodVisitor.visitLineNumber(42, label6);
+methodVisitor.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {"java/lang/Exception"});
 methodVisitor.visitVarInsn(ASTORE, 2);
 Label label16 = new Label();
 methodVisitor.visitLabel(label16);
@@ -149,6 +154,7 @@ methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Throwable", "toString", 
 methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
 methodVisitor.visitLabel(label15);
 methodVisitor.visitLineNumber(46, label15);
+methodVisitor.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 methodVisitor.visitInsn(RETURN);
 Label label18 = new Label();
 methodVisitor.visitLabel(label18);

@@ -9,6 +9,7 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.RecordComponentVisitor;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.TypePath;
 public class LicenseReaderPlanCDumpFix implements Opcodes {
@@ -17,6 +18,7 @@ public static byte[] dump () throws Exception {
 
 ClassWriter classWriter = new ClassWriter(0);
 FieldVisitor fieldVisitor;
+RecordComponentVisitor recordComponentVisitor;
 MethodVisitor methodVisitor;
 AnnotationVisitor annotationVisitor0;
 

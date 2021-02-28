@@ -9,6 +9,7 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.RecordComponentVisitor;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.TypePath;
 public class LicenseReaderDumpFix implements Opcodes {
@@ -17,6 +18,7 @@ public static byte[] dump () throws Exception {
 
 ClassWriter classWriter = new ClassWriter(0);
 FieldVisitor fieldVisitor;
+RecordComponentVisitor recordComponentVisitor;
 MethodVisitor methodVisitor;
 AnnotationVisitor annotationVisitor0;
 
@@ -1619,50 +1621,7 @@ methodVisitor.visitLineNumber(41, label13);
 methodVisitor.visitJumpInsn(GOTO, label5);
 methodVisitor.visitLabel(label2);
 methodVisitor.visitLineNumber(40, label2);
-methodVisitor.visitVarInsn(ASTORE, 5);
-methodVisitor.visitLabel(label3);
-methodVisitor.visitVarInsn(ALOAD, 2);
-methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/io/ByteArrayInputStream", "close", "()V", false);
-Label label14 = new Label();
-methodVisitor.visitLabel(label14);
-methodVisitor.visitLineNumber(41, label14);
-methodVisitor.visitVarInsn(ALOAD, 5);
-methodVisitor.visitInsn(ATHROW);
-methodVisitor.visitLabel(label5);
-methodVisitor.visitLineNumber(45, label5);
-Label label15 = new Label();
-methodVisitor.visitJumpInsn(GOTO, label15);
-methodVisitor.visitLabel(label6);
-methodVisitor.visitLineNumber(42, label6);
-methodVisitor.visitVarInsn(ASTORE, 2);
-Label label16 = new Label();
-methodVisitor.visitLabel(label16);
-methodVisitor.visitLineNumber(43, label16);
-methodVisitor.visitVarInsn(ALOAD, 0);
-methodVisitor.visitInsn(ACONST_NULL);
-methodVisitor.visitFieldInsn(PUTFIELD, "com/jp/protection/pub/LicenseReader", "fLicense", "Lcom/jp/protection/pub/License;");
-Label label17 = new Label();
-methodVisitor.visitLabel(label17);
-methodVisitor.visitLineNumber(44, label17);
-methodVisitor.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-methodVisitor.visitVarInsn(ALOAD, 2);
-methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Exception", "getCause", "()Ljava/lang/Throwable;", false);
-methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Throwable", "toString", "()Ljava/lang/String;", false);
-methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
-methodVisitor.visitLabel(label15);
-methodVisitor.visitLineNumber(46, label15);
-methodVisitor.visitInsn(RETURN);
-Label label18 = new Label();
-methodVisitor.visitLabel(label18);
-methodVisitor.visitLocalVariable("properties", "Ljava/util/Properties;", null, label7, label1, 3);
-methodVisitor.visitLocalVariable("license", "Lcom/jp/protection/pub/LicenseImpl;", null, label9, label1, 4);
-methodVisitor.visitLocalVariable("byteArrayInputStream", "Ljava/io/ByteArrayInputStream;", null, label0, label5, 2);
-methodVisitor.visitLocalVariable("ex", "Ljava/lang/Exception;", null, label16, label15, 2);
-methodVisitor.visitLocalVariable("this", "Lcom/jp/protection/pub/LicenseReader;", null, label4, label18, 0);
-methodVisitor.visitLocalVariable("array", "[B", null, label4, label18, 1);
-methodVisitor.visitMaxs(3, 6);
-methodVisitor.visitEnd();
-}
+methodVisitor.visitFrame(Opcodes.F_FULL, 3, new Object[] {"com/jp/protection/pub/LicenseReader", "[B", "java/io/ByteArrayInputStream"}
 {
 methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "getLicenseProduct", "(Ljava/io/InputStream;)Ljava/lang/String;", null, null);
 methodVisitor.visitCode();

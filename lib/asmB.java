@@ -1,356 +1,362 @@
-//
+package asm.com.eviware.soapui.support.swing;
 
 import java.util.*;
 
 import org.objectweb.asm.*;
 
 public class SwingUtilsDump implements Opcodes {
-
+    //runOK
     public static byte[] dump() throws Exception {
 
-        ClassWriter classWriter = new ClassWriter(0);
-        FieldVisitor fieldVisitor;
-        MethodVisitor methodVisitor;
-        AnnotationVisitor annotationVisitor0;
+        ClassWriter cw = new ClassWriter(0);
+        FieldVisitor fv;
+        MethodVisitor mv;
+        AnnotationVisitor av0;
 
-        classWriter.visit(V11, ACC_PUBLIC | ACC_SUPER, "com/eviware/soapui/support/swing/SwingUtils", null, "java/lang/Object", new String[]{"com/eviware/soapui/support/UIUtils"});
+        cw.visit(V1_7, ACC_PUBLIC + ACC_SUPER, "com/eviware/soapui/support/swing/SwingUtils", null, "java/lang/Object", new String[]{"com/eviware/soapui/support/UIUtils"});
 
-        classWriter.visitSource("SwingUtils.java", null);
-
-        classWriter.visitNestMember("com/eviware/soapui/support/swing/SwingUtils$1");
-
-        classWriter.visitInnerClass("com/eviware/soapui/support/swing/SwingUtils$1", null, null, 0);
+        cw.visitSource("SwingUtils.java", null);
 
         {
-            methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
+            mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
             mv.visitCode();
-            Label label0 = new Label();
-            mv.visitLabel(label0);
-            mv.visitLineNumber(28, label0);
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+ 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
             mv.visitInsn(RETURN);
-            Label label1 = new Label();
-            mv.visitLabel(label1);
-            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, label0, label1, 0);
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, l0, l1, 0);
             mv.visitMaxs(1, 1);
             mv.visitEnd();
         }
         {
-            methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "invokeLater", "(Ljava/lang/Runnable;)V", null, null);
+            mv = cw.visitMethod(ACC_PUBLIC, "invokeLater", "(Ljava/lang/Runnable;)V", null, null);
             mv.visitCode();
-            Label label0 = new Label();
-            mv.visitLabel(label0);
-            mv.visitLineNumber(30, label0);
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+ 
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKESTATIC, "javax/swing/SwingUtilities", "invokeLater", "(Ljava/lang/Runnable;)V", false);
-            Label label1 = new Label();
-            mv.visitLabel(label1);
-            mv.visitLineNumber(31, label1);
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+ 
             mv.visitInsn(RETURN);
-            Label label2 = new Label();
-            mv.visitLabel(label2);
-            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, label0, label2, 0);
-            mv.visitLocalVariable("runnable", "Ljava/lang/Runnable;", null, label0, label2, 1);
+            Label l2 = new Label();
+            mv.visitLabel(l2);
+            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, l0, l2, 0);
+            mv.visitLocalVariable("runnable", "Ljava/lang/Runnable;", null, l0, l2, 1);
             mv.visitMaxs(1, 2);
             mv.visitEnd();
         }
         {
-            methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "invokeAndWait", "(Ljava/lang/Runnable;)V", null, new String[]{"java/lang/Exception"});
+            mv = cw.visitMethod(ACC_PUBLIC, "invokeAndWait", "(Ljava/lang/Runnable;)V", null, new String[]{"java/lang/Exception"});
             mv.visitCode();
-            Label label0 = new Label();
-            mv.visitLabel(label0);
-            mv.visitLineNumber(34, label0);
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+ 
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKESTATIC, "javax/swing/SwingUtilities", "invokeAndWait", "(Ljava/lang/Runnable;)V", false);
-            Label label1 = new Label();
-            mv.visitLabel(label1);
-            mv.visitLineNumber(35, label1);
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+ 
             mv.visitInsn(RETURN);
-            Label label2 = new Label();
-            mv.visitLabel(label2);
-            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, label0, label2, 0);
-            mv.visitLocalVariable("runnable", "Ljava/lang/Runnable;", null, label0, label2, 1);
+            Label l2 = new Label();
+            mv.visitLabel(l2);
+            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, l0, l2, 0);
+            mv.visitLocalVariable("runnable", "Ljava/lang/Runnable;", null, l0, l2, 1);
             mv.visitMaxs(1, 2);
             mv.visitEnd();
         }
         {
-            methodVisitor = classWriter.visitMethod(ACC_PUBLIC, "invokeAndWaitIfNotInEDT", "(Ljava/lang/Runnable;)V", null, null);
+            mv = cw.visitMethod(ACC_PUBLIC, "invokeAndWaitIfNotInEDT", "(Ljava/lang/Runnable;)V", null, null);
             mv.visitCode();
-            Label label0 = new Label();
-            Label label1 = new Label();
-            Label label2 = new Label();
-            mv.visitTryCatchBlock(label0, label1, label2, "java/lang/InterruptedException");
-            Label label3 = new Label();
-            mv.visitTryCatchBlock(label0, label1, label3, "java/lang/reflect/InvocationTargetException");
-            Label label4 = new Label();
-            mv.visitLabel(label4);
-            mv.visitLineNumber(39, label4);
+            Label l0 = new Label();
+            Label l1 = new Label();
+            Label l2 = new Label();
+            mv.visitTryCatchBlock(l0, l1, l2, "java/lang/InterruptedException");
+            Label l3 = new Label();
+            mv.visitTryCatchBlock(l0, l1, l3, "java/lang/reflect/InvocationTargetException");
+            Label l4 = new Label();
+            mv.visitLabel(l4);
+ 
             mv.visitMethodInsn(INVOKESTATIC, "javax/swing/SwingUtilities", "isEventDispatchThread", "()Z", false);
-            mv.visitJumpInsn(IFEQ, label0);
-            Label label5 = new Label();
-            mv.visitLabel(label5);
-            mv.visitLineNumber(40, label5);
+            mv.visitJumpInsn(IFEQ, l0);
+            Label l5 = new Label();
+            mv.visitLabel(l5);
+ 
+            mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+            mv.visitLdcInsn("------------debug info--------------------");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+            Label l6 = new Label();
+            mv.visitLabel(l6);
+ 
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKEINTERFACE, "java/lang/Runnable", "run", "()V", true);
-            Label label6 = new Label();
-            mv.visitLabel(label6);
-            mv.visitLineNumber(41, label6);
-            Label label7 = new Label();
-            mv.visitJumpInsn(GOTO, label7);
-            mv.visitLabel(label0);
-            mv.visitLineNumber(43, label0);
+            Label l7 = new Label();
+            mv.visitJumpInsn(GOTO, l7);
+            mv.visitLabel(l0);
+ 
+            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKESTATIC, "javax/swing/SwingUtilities", "invokeAndWait", "(Ljava/lang/Runnable;)V", false);
-            mv.visitLabel(label1);
-            mv.visitLineNumber(44, label1);
-            mv.visitJumpInsn(GOTO, label7);
-            mv.visitLabel(label2);
+            mv.visitLabel(l1);
+ 
+            mv.visitJumpInsn(GOTO, l7);
+            mv.visitLabel(l2);
+ 
+            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/InterruptedException"});
             mv.visitVarInsn(ASTORE, 2);
-            Label label8 = new Label();
-            mv.visitLabel(label8);
-            mv.visitLineNumber(45, label8);
+            Label l8 = new Label();
+            mv.visitLabel(l8);
+ 
             mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
             mv.visitInsn(DUP);
             mv.visitVarInsn(ALOAD, 2);
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V", false);
             mv.visitInsn(ATHROW);
-            mv.visitLabel(label3);
-            mv.visitLineNumber(46, label3);
+            mv.visitLabel(l3);
+ 
+            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/reflect/InvocationTargetException"});
             mv.visitVarInsn(ASTORE, 2);
-            Label label9 = new Label();
-            mv.visitLabel(label9);
-            mv.visitLineNumber(47, label9);
+            Label l9 = new Label();
+            mv.visitLabel(l9);
+ 
             mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
             mv.visitInsn(DUP);
             mv.visitVarInsn(ALOAD, 2);
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V", false);
             mv.visitInsn(ATHROW);
-            mv.visitLabel(label7);
-            mv.visitLineNumber(50, label7);
+            mv.visitLabel(l7);
+ 
+            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
             mv.visitInsn(RETURN);
-            Label label10 = new Label();
-            mv.visitLabel(label10);
-            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, label4, label10, 0);
-            mv.visitLocalVariable("runnable", "Ljava/lang/Runnable;", null, label4, label10, 1);
-            mv.visitLocalVariable("e", "Ljava/lang/InterruptedException;", null, label8, label3, 2);
-            mv.visitLocalVariable("e", "Ljava/lang/reflect/InvocationTargetException;", null, label9, label7, 2);
+            Label l10 = new Label();
+            mv.visitLabel(l10);
+            mv.visitLocalVariable("var3", "Ljava/lang/InterruptedException;", null, l8, l3, 2);
+            mv.visitLocalVariable("var4", "Ljava/lang/reflect/InvocationTargetException;", null, l9, l7, 2);
+            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, l4, l10, 0);
+            mv.visitLocalVariable("runnable", "Ljava/lang/Runnable;", null, l4, l10, 1);
             mv.visitMaxs(3, 3);
             mv.visitEnd();
         }
         {
-            methodVisitor = classWriter.visitMethod(ACC_PUBLIC | ACC_STATIC, "exit", "(I)V", null, null);
+            mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "exit", "(I)V", null, null);
             mv.visitCode();
-            Label label0 = new Label();
-            mv.visitLabel(label0);
-            mv.visitLineNumber(36, label0);
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+ 
             mv.visitInsn(RETURN);
-            Label label1 = new Label();
-            mv.visitLabel(label1);
-            mv.visitLocalVariable("status", "I", null, label0, label1, 0);
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+            mv.visitLocalVariable("status", "I", null, l0, l1, 0);
             mv.visitMaxs(0, 1);
             mv.visitEnd();
         }
         {
-            methodVisitor = classWriter.visitMethod(ACC_PUBLIC | ACC_STATIC | ACC_VARARGS, "findAllComponentsRecursively", "(Ljava/awt/Container;[Ljava/lang/Class;)Ljava/util/List;", "(Ljava/awt/Container;[Ljava/lang/Class<+Ljava/awt/Component;>;)Ljava/util/List<Ljava/awt/Component;>;", null);
+            mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC + ACC_VARARGS, "findAllComponentsRecursively", "(Ljava/awt/Container;[Ljava/lang/Class;)Ljava/util/List;", "(Ljava/awt/Container;[Ljava/lang/Class<+Ljava/awt/Component;>;)Ljava/util/List<Ljava/awt/Component;>;", null);
             mv.visitCode();
-            Label label0 = new Label();
-            mv.visitLabel(label0);
-            mv.visitLineNumber(80, label0);
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+ 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitLdcInsn(new Integer(2147483646));
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKESTATIC, "com/eviware/soapui/support/swing/SwingUtils", "findAllComponentsRecursively", "(Ljava/awt/Container;I[Ljava/lang/Class;)Ljava/util/List;", false);
             mv.visitInsn(ARETURN);
-            Label label1 = new Label();
-            mv.visitLabel(label1);
-            mv.visitLocalVariable("container", "Ljava/awt/Container;", null, label0, label1, 0);
-            mv.visitLocalVariable("filter", "[Ljava/lang/Class;", null, label0, label1, 1);
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+            mv.visitLocalVariable("container", "Ljava/awt/Container;", null, l0, l1, 0);
+            mv.visitLocalVariable("filter", "[Ljava/lang/Class;", "[Ljava/lang/Class<+Ljava/awt/Component;>;", l0, l1, 1);
             mv.visitMaxs(3, 2);
             mv.visitEnd();
         }
         {
-            methodVisitor = classWriter.visitMethod(ACC_PUBLIC | ACC_STATIC | ACC_VARARGS, "findAllComponentsRecursively", "(Ljava/awt/Container;I[Ljava/lang/Class;)Ljava/util/List;", "(Ljava/awt/Container;I[Ljava/lang/Class<+Ljava/awt/Component;>;)Ljava/util/List<Ljava/awt/Component;>;", null);
+            mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC + ACC_VARARGS, "findAllComponentsRecursively", "(Ljava/awt/Container;I[Ljava/lang/Class;)Ljava/util/List;", "(Ljava/awt/Container;I[Ljava/lang/Class<+Ljava/awt/Component;>;)Ljava/util/List<Ljava/awt/Component;>;", null);
             mv.visitCode();
-            Label label0 = new Label();
-            mv.visitLabel(label0);
-            mv.visitLineNumber(87, label0);
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+ 
             mv.visitTypeInsn(NEW, "java/util/ArrayList");
             mv.visitInsn(DUP);
             mv.visitMethodInsn(INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V", false);
             mv.visitVarInsn(ASTORE, 3);
-            Label label1 = new Label();
-            mv.visitLabel(label1);
-            mv.visitLineNumber(88, label1);
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+ 
             mv.visitVarInsn(ALOAD, 3);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ILOAD, 1);
             mv.visitVarInsn(ALOAD, 2);
             mv.visitMethodInsn(INVOKESTATIC, "com/eviware/soapui/support/swing/SwingUtils", "internalFindAllComponentsRecursively", "(Ljava/util/List;Ljava/awt/Container;I[Ljava/lang/Class;)V", false);
-            Label label2 = new Label();
-            mv.visitLabel(label2);
-            mv.visitLineNumber(89, label2);
+            Label l2 = new Label();
+            mv.visitLabel(l2);
+ 
             mv.visitVarInsn(ALOAD, 3);
             mv.visitInsn(ARETURN);
-            Label label3 = new Label();
-            mv.visitLabel(label3);
-            mv.visitLocalVariable("container", "Ljava/awt/Container;", null, label0, label3, 0);
-            mv.visitLocalVariable("depth", "I", null, label0, label3, 1);
-            mv.visitLocalVariable("filter", "[Ljava/lang/Class;", null, label0, label3, 2);
-            mv.visitLocalVariable("result", "Ljava/util/List;", "Ljava/util/List<Ljava/awt/Component;>;", label1, label3, 3);
+            Label l3 = new Label();
+            mv.visitLabel(l3);
+            mv.visitLocalVariable("container", "Ljava/awt/Container;", null, l0, l3, 0);
+            mv.visitLocalVariable("depth", "I", null, l0, l3, 1);
+            mv.visitLocalVariable("filter", "[Ljava/lang/Class;", "[Ljava/lang/Class<+Ljava/awt/Component;>;", l0, l3, 2);
+            mv.visitLocalVariable("result", "Ljava/util/List;", "Ljava/util/List<Ljava/awt/Component;>;", l1, l3, 3);
             mv.visitMaxs(4, 4);
             mv.visitEnd();
         }
         {
-            methodVisitor = classWriter.visitMethod(ACC_PRIVATE | ACC_STATIC | ACC_VARARGS, "internalFindAllComponentsRecursively", "(Ljava/util/List;Ljava/awt/Container;I[Ljava/lang/Class;)V", "(Ljava/util/List<Ljava/awt/Component;>;Ljava/awt/Container;I[Ljava/lang/Class<+Ljava/awt/Component;>;)V", null);
+            mv = cw.visitMethod(ACC_PRIVATE + ACC_STATIC + ACC_VARARGS, "internalFindAllComponentsRecursively", "(Ljava/util/List;Ljava/awt/Container;I[Ljava/lang/Class;)V", "(Ljava/util/List<Ljava/awt/Component;>;Ljava/awt/Container;I[Ljava/lang/Class<+Ljava/awt/Component;>;)V", null);
             mv.visitCode();
-            Label label0 = new Label();
-            mv.visitLabel(label0);
-            mv.visitLineNumber(97, label0);
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+ 
             mv.visitVarInsn(ILOAD, 2);
-            Label label1 = new Label();
-            mv.visitJumpInsn(IFGE, label1);
-            Label label2 = new Label();
-            mv.visitLabel(label2);
-            mv.visitLineNumber(98, label2);
-            mv.visitInsn(RETURN);
-            mv.visitLabel(label1);
-            mv.visitLineNumber(100, label1);
+            Label l1 = new Label();
+            mv.visitJumpInsn(IFLT, l1);
+            Label l2 = new Label();
+            mv.visitLabel(l2);
+ 
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/awt/Container", "getComponents", "()[Ljava/awt/Component;", false);
             mv.visitInsn(DUP);
-            mv.visitVarInsn(ASTORE, 7);
-            mv.visitInsn(ARRAYLENGTH);
-            mv.visitVarInsn(ISTORE, 6);
-            mv.visitInsn(ICONST_0);
-            mv.visitVarInsn(ISTORE, 5);
-            Label label3 = new Label();
-            mv.visitJumpInsn(GOTO, label3);
-            Label label4 = new Label();
-            mv.visitLabel(label4);
-            mv.visitVarInsn(ALOAD, 7);
-            mv.visitVarInsn(ILOAD, 5);
-            mv.visitInsn(AALOAD);
             mv.visitVarInsn(ASTORE, 4);
-            Label label5 = new Label();
-            mv.visitLabel(label5);
-            mv.visitLineNumber(101, label5);
-            mv.visitVarInsn(ALOAD, 3);
-            mv.visitInsn(DUP);
-            mv.visitVarInsn(ASTORE, 11);
+            Label l3 = new Label();
+            mv.visitLabel(l3);
             mv.visitInsn(ARRAYLENGTH);
-            mv.visitVarInsn(ISTORE, 10);
+            mv.visitVarInsn(ISTORE, 5);
+            Label l4 = new Label();
+            mv.visitLabel(l4);
+ 
             mv.visitInsn(ICONST_0);
-            mv.visitVarInsn(ISTORE, 9);
-            Label label6 = new Label();
-            mv.visitJumpInsn(GOTO, label6);
-            Label label7 = new Label();
-            mv.visitLabel(label7);
-            mv.visitVarInsn(ALOAD, 11);
-            mv.visitVarInsn(ILOAD, 9);
+            mv.visitVarInsn(ISTORE, 6);
+            Label l5 = new Label();
+            mv.visitLabel(l5);
+            mv.visitFrame(Opcodes.F_APPEND, 3, new Object[]{"[Ljava/awt/Component;", Opcodes.INTEGER, Opcodes.INTEGER}, 0, null);
+            mv.visitVarInsn(ILOAD, 6);
+            mv.visitVarInsn(ILOAD, 5);
+            mv.visitJumpInsn(IF_ICMPGE, l1);
+            Label l6 = new Label();
+            mv.visitLabel(l6);
+ 
+            mv.visitVarInsn(ALOAD, 4);
+            mv.visitVarInsn(ILOAD, 6);
             mv.visitInsn(AALOAD);
+            mv.visitVarInsn(ASTORE, 7);
+            Label l7 = new Label();
+            mv.visitLabel(l7);
+ 
+            mv.visitVarInsn(ALOAD, 3);
             mv.visitVarInsn(ASTORE, 8);
-            Label label8 = new Label();
-            mv.visitLabel(label8);
-            mv.visitLineNumber(102, label8);
+            Label l8 = new Label();
+            mv.visitLabel(l8);
+ 
+            mv.visitVarInsn(ALOAD, 3);
+            mv.visitInsn(ARRAYLENGTH);
+            mv.visitVarInsn(ISTORE, 9);
+            Label l9 = new Label();
+            mv.visitLabel(l9);
+ 
+            mv.visitInsn(ICONST_0);
+            mv.visitVarInsn(ISTORE, 10);
+            Label l10 = new Label();
+            mv.visitLabel(l10);
+            mv.visitFrame(Opcodes.F_FULL, 11, new Object[]{"java/util/List", "java/awt/Container", Opcodes.INTEGER, "[Ljava/lang/Class;", "[Ljava/awt/Component;", Opcodes.INTEGER, Opcodes.INTEGER, "java/awt/Component", "[Ljava/lang/Class;", Opcodes.INTEGER, Opcodes.INTEGER}, 0, new Object[]{});
+            mv.visitVarInsn(ILOAD, 10);
+            mv.visitVarInsn(ILOAD, 9);
+            Label l11 = new Label();
+            mv.visitJumpInsn(IF_ICMPGE, l11);
+            Label l12 = new Label();
+            mv.visitLabel(l12);
+ 
             mv.visitVarInsn(ALOAD, 8);
-            Label label9 = new Label();
-            mv.visitJumpInsn(IFNONNULL, label9);
-            Label label10 = new Label();
-            mv.visitLabel(label10);
-            mv.visitLineNumber(103, label10);
-            Label label11 = new Label();
-            mv.visitJumpInsn(GOTO, label11);
-            mv.visitLabel(label9);
-            mv.visitLineNumber(105, label9);
-            mv.visitVarInsn(ALOAD, 8);
-            mv.visitVarInsn(ALOAD, 4);
+            mv.visitVarInsn(ILOAD, 10);
+            mv.visitInsn(AALOAD);
+            mv.visitVarInsn(ASTORE, 11);
+            Label l13 = new Label();
+            mv.visitLabel(l13);
+ 
+            mv.visitVarInsn(ALOAD, 11);
+            Label l14 = new Label();
+            mv.visitJumpInsn(IFNULL, l14);
+            mv.visitVarInsn(ALOAD, 11);
+            mv.visitVarInsn(ALOAD, 7);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Class", "isInstance", "(Ljava/lang/Object;)Z", false);
-            mv.visitJumpInsn(IFEQ, label11);
-            Label label12 = new Label();
-            mv.visitLabel(label12);
-            mv.visitLineNumber(106, label12);
+            mv.visitJumpInsn(IFEQ, l14);
+            Label l15 = new Label();
+            mv.visitLabel(l15);
+ 
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, 4);
+            mv.visitVarInsn(ALOAD, 7);
             mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
             mv.visitInsn(POP);
-            Label label13 = new Label();
-            mv.visitLabel(label13);
-            mv.visitLineNumber(107, label13);
-            Label label14 = new Label();
-            mv.visitJumpInsn(GOTO, label14);
-            mv.visitLabel(label11);
-            mv.visitLineNumber(101, label11);
-            mv.visitIincInsn(9, 1);
-            mv.visitLabel(label6);
-            mv.visitVarInsn(ILOAD, 9);
-            mv.visitVarInsn(ILOAD, 10);
-            mv.visitJumpInsn(IF_ICMPLT, label7);
-            mv.visitLabel(label14);
-            mv.visitLineNumber(110, label14);
-            mv.visitVarInsn(ALOAD, 4);
+            Label l16 = new Label();
+            mv.visitLabel(l16);
+ 
+            mv.visitJumpInsn(GOTO, l11);
+            mv.visitLabel(l14);
+ 
+            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+            mv.visitIincInsn(10, 1);
+            mv.visitJumpInsn(GOTO, l10);
+            mv.visitLabel(l11);
+ 
+            mv.visitFrame(Opcodes.F_CHOP, 1, null, 0, null);
+            mv.visitVarInsn(ALOAD, 7);
             mv.visitTypeInsn(INSTANCEOF, "java/awt/Container");
-            Label label15 = new Label();
-            mv.visitJumpInsn(IFEQ, label15);
-            Label label16 = new Label();
-            mv.visitLabel(label16);
-            mv.visitLineNumber(111, label16);
-            mv.visitVarInsn(ALOAD, 4);
+            Label l17 = new Label();
+            mv.visitJumpInsn(IFEQ, l17);
+            Label l18 = new Label();
+            mv.visitLabel(l18);
+ 
+            mv.visitVarInsn(ALOAD, 7);
             mv.visitTypeInsn(CHECKCAST, "java/awt/Container");
-            mv.visitVarInsn(ASTORE, 8);
-            Label label17 = new Label();
-            mv.visitLabel(label17);
-            mv.visitLineNumber(112, label17);
-            mv.visitVarInsn(ALOAD, 8);
+            mv.visitVarInsn(ASTORE, 10);
+            Label l19 = new Label();
+            mv.visitLabel(l19);
+ 
+            mv.visitVarInsn(ALOAD, 10);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/awt/Container", "getComponentCount", "()I", false);
-            mv.visitJumpInsn(IFLE, label15);
-            Label label18 = new Label();
-            mv.visitLabel(label18);
-            mv.visitLineNumber(114, label18);
+            mv.visitJumpInsn(IFLE, l17);
+            Label l20 = new Label();
+            mv.visitLabel(l20);
+ 
             mv.visitVarInsn(ALOAD, 0);
-            Label label19 = new Label();
-            mv.visitLabel(label19);
-            mv.visitLineNumber(115, label19);
-            mv.visitVarInsn(ALOAD, 8);
-            Label label20 = new Label();
-            mv.visitLabel(label20);
-            mv.visitLineNumber(116, label20);
+            mv.visitVarInsn(ALOAD, 10);
             mv.visitVarInsn(ILOAD, 2);
             mv.visitInsn(ICONST_1);
             mv.visitInsn(ISUB);
-            Label label21 = new Label();
-            mv.visitLabel(label21);
-            mv.visitLineNumber(117, label21);
             mv.visitVarInsn(ALOAD, 3);
-            Label label22 = new Label();
-            mv.visitLabel(label22);
-            mv.visitLineNumber(113, label22);
             mv.visitMethodInsn(INVOKESTATIC, "com/eviware/soapui/support/swing/SwingUtils", "internalFindAllComponentsRecursively", "(Ljava/util/List;Ljava/awt/Container;I[Ljava/lang/Class;)V", false);
-            mv.visitLabel(label15);
-            mv.visitLineNumber(100, label15);
-            mv.visitIincInsn(5, 1);
-            mv.visitLabel(label3);
-            mv.visitVarInsn(ILOAD, 5);
-            mv.visitVarInsn(ILOAD, 6);
-            mv.visitJumpInsn(IF_ICMPLT, label4);
-            Label label23 = new Label();
-            mv.visitLabel(label23);
-            mv.visitLineNumber(121, label23);
+            mv.visitLabel(l17);
+ 
+            mv.visitFrame(Opcodes.F_CHOP, 3, null, 0, null);
+            mv.visitIincInsn(6, 1);
+            mv.visitJumpInsn(GOTO, l5);
+            mv.visitLabel(l1);
+ 
+            mv.visitFrame(Opcodes.F_CHOP, 3, null, 0, null);
             mv.visitInsn(RETURN);
-            Label label24 = new Label();
-            mv.visitLabel(label24);
-            mv.visitLocalVariable("result", "Ljava/util/List;", "Ljava/util/List<Ljava/awt/Component;>;", label0, label24, 0);
-            mv.visitLocalVariable("container", "Ljava/awt/Container;", null, label0, label24, 1);
-            mv.visitLocalVariable("depth", "I", null, label0, label24, 2);
-            mv.visitLocalVariable("filter", "[Ljava/lang/Class;", null, label0, label24, 3);
-            mv.visitLocalVariable("component", "Ljava/awt/Component;", null, label5, label15, 4);
-            mv.visitLocalVariable("aClass", "Ljava/lang/Class;", "Ljava/lang/Class<+Ljava/awt/Component;>;", label8, label11, 8);
-            mv.visitLocalVariable("childContainer", "Ljava/awt/Container;", null, label17, label15, 8);
+            Label l21 = new Label();
+            mv.visitLabel(l21);
+            mv.visitLocalVariable("aClass", "Ljava/lang/Class;", "Ljava/lang/Class<+Ljava/awt/Component;>;", l13, l14, 11);
+            mv.visitLocalVariable("var9", "I", null, l10, l11, 10);
+            mv.visitLocalVariable("childContainer", "Ljava/awt/Container;", null, l19, l17, 10);
+            mv.visitLocalVariable("component", "Ljava/awt/Component;", null, l7, l17, 7);
+            mv.visitLocalVariable("var11", "[Ljava/lang/Class;", null, l8, l17, 8);
+            mv.visitLocalVariable("var10", "I", null, l9, l17, 9);
+            mv.visitLocalVariable("var5", "I", null, l5, l1, 6);
+            mv.visitLocalVariable("var7", "[Ljava/awt/Component;", null, l3, l1, 4);
+            mv.visitLocalVariable("var6", "I", null, l4, l1, 5);
+            mv.visitLocalVariable("result", "Ljava/util/List;", "Ljava/util/List<Ljava/awt/Component;>;", l0, l21, 0);
+            mv.visitLocalVariable("container", "Ljava/awt/Container;", null, l0, l21, 1);
+            mv.visitLocalVariable("depth", "I", null, l0, l21, 2);
+            mv.visitLocalVariable("filter", "[Ljava/lang/Class;", "[Ljava/lang/Class<+Ljava/awt/Component;>;", l0, l21, 3);
             mv.visitMaxs(4, 12);
             mv.visitEnd();
         }
-        classWriter.visitEnd();
+        cw.visitEnd();
 
-        return classWriter.toByteArray();
+        return cw.toByteArray();
     }
 }

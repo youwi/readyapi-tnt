@@ -1,8 +1,4 @@
 import org.junit.jupiter.api.Test;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.util.ASMifier;
-import org.objectweb.asm.util.Printer;
-import org.objectweb.asm.util.TraceClassVisitor;
 
 import java.io.*;
 import java.util.Properties;
@@ -17,7 +13,7 @@ public class PlanC {
     @Test
     public void byJavaCodePlanC() throws Exception {
         String fileCoreName = "LicenseReaderPlanC";
-        PlanA.javaToAsmSource("com.jp.protection.pub.LicenseReader");
+        PlanA.classToAsmSource("com.jp.protection.pub.LicenseReader");
 
         String oriString = PlanA.readFileToString("src/test/java/gen/LicenseReaderDump.java");
 

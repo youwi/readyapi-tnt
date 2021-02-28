@@ -1,15 +1,10 @@
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.util.ASMifier;
 import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.TraceClassVisitor;
 
 import java.io.*;
-
-import static org.objectweb.asm.Opcodes.*;
 
 /**
  * readapi3.6-tnt
@@ -23,8 +18,8 @@ public class PlanA {
         // 操作asm码
         String fileCoreName = "LicenseReader";
 
-        javaToAsmSource("com.jp.protection.pub.LicenseReader");
-        javaToAsmSource("com.jp.protection.pub.LicenseReaderCrack");
+        classToAsmSource("com.jp.protection.pub.LicenseReader");
+        classToAsmSource("com.jp.protection.pub.LicenseReaderCrack");
 
         String oriString = readFileToString("src/test/java/gen/LicenseReaderDump.java");
         String craString = readFileToString("src/test/java/gen/LicenseReaderCrackDump.java");
@@ -125,7 +120,7 @@ public class PlanA {
      * @param className
      * @throws IOException
      */
-    static void javaToAsmSource(String className) throws IOException {
+    static void classToAsmSource(String className) throws IOException {
         ASMifier sourcePrinter = new ASMifier();//ASM7,"vi",4);
 
 
@@ -138,7 +133,7 @@ public class PlanA {
         genFile.createNewFile();
         FileOutputStream fileOutputStream = new FileOutputStream(genFile);
         TraceClassVisitor traceClassVisitor = new TraceClassVisitor(null, (Printer) sourcePrinter, new PrintWriter(fileOutputStream, true));
-        new ClassReader(className).accept(traceClassVisitor, 4);
+        new ClassReader(className).accept(traceClassVisitor, 0);
         fileOutputStream.flush();
 
     }

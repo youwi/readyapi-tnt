@@ -11,21 +11,27 @@ repositories {
 }
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-
+sourceSets {
+    main {
+        java {
+            // exclude 'com/eviware/soapui/support/swing/SwingUtils.java'
+        }
+    }
+}
 dependencies {
-    implementation fileTree(dir: 'lib', include: ['*.jar'],excludes: ["*-crack.jar"])
+    implementation fileTree(dir: 'lib', include: ['*.jar'], excludes: ["*-crack.jar"])
 
-    implementation fileTree(dir: appRoot + '/lib', include: ['ready-api*.jar'],excludes: ["*-crack.jar"])
-    implementation fileTree(dir: appRoot + '/lib', include: ['Pro*.jar', "load*.jar","analytics*.jar","slf*.jar"],excludes: ["*-crack.jar"])
+    implementation fileTree(dir: appRoot + '/lib', include: ['ready-api*.jar'], excludes: ["*-crack.jar"])
+    implementation fileTree(dir: appRoot + '/lib', include: ['Pro*.jar', "load*.jar", "analytics*.jar", "slf*.jar"], excludes: ["*-crack.jar"])
 
     compile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     compile 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 
-  //  compile 'com.google.googlejavaformat:google-java-format:1.9'
+    //  compile 'com.google.googlejavaformat:google-java-format:1.9'
 
-    implementation group: 'org.ow2.asm', name: 'asm', version: '7.1'
-    implementation group: 'org.ow2.asm', name: 'asm-util', version: '7.1'
-    implementation group: 'org.ow2.asm', name: 'asm-commons', version: '7.1'
+    implementation group: 'org.ow2.asm', name: 'asm', version: '9.1'
+    implementation group: 'org.ow2.asm', name: 'asm-util', version: '9.1'
+    implementation group: 'org.ow2.asm', name: 'asm-commons', version: '9.1'
 
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
 

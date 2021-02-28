@@ -22,16 +22,13 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel(l0);
-            mv.visitLineNumber(22, l0);
+ 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+            mv.visitInsn(RETURN);
             Label l1 = new Label();
             mv.visitLabel(l1);
-            mv.visitLineNumber(23, l1);
-            mv.visitInsn(RETURN);
-            Label l2 = new Label();
-            mv.visitLabel(l2);
-            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, l0, l2, 0);
+            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, l0, l1, 0);
             mv.visitMaxs(1, 1);
             mv.visitEnd();
         }
@@ -40,12 +37,12 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel(l0);
-            mv.visitLineNumber(26, l0);
+ 
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKESTATIC, "javax/swing/SwingUtilities", "invokeLater", "(Ljava/lang/Runnable;)V", false);
             Label l1 = new Label();
             mv.visitLabel(l1);
-            mv.visitLineNumber(27, l1);
+ 
             mv.visitInsn(RETURN);
             Label l2 = new Label();
             mv.visitLabel(l2);
@@ -59,12 +56,12 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel(l0);
-            mv.visitLineNumber(30, l0);
+ 
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKESTATIC, "javax/swing/SwingUtilities", "invokeAndWait", "(Ljava/lang/Runnable;)V", false);
             Label l1 = new Label();
             mv.visitLabel(l1);
-            mv.visitLineNumber(31, l1);
+ 
             mv.visitInsn(RETURN);
             Label l2 = new Label();
             mv.visitLabel(l2);
@@ -84,58 +81,60 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitTryCatchBlock(l0, l1, l3, "java/lang/reflect/InvocationTargetException");
             Label l4 = new Label();
             mv.visitLabel(l4);
-            mv.visitLineNumber(34, l4);
+ 
             mv.visitMethodInsn(INVOKESTATIC, "javax/swing/SwingUtilities", "isEventDispatchThread", "()Z", false);
             mv.visitJumpInsn(IFEQ, l0);
             Label l5 = new Label();
             mv.visitLabel(l5);
-            mv.visitLineNumber(35, l5);
+ 
+            mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+            mv.visitLdcInsn("------------debug info--------------------");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+            Label l6 = new Label();
+            mv.visitLabel(l6);
+ 
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKEINTERFACE, "java/lang/Runnable", "run", "()V", true);
-            Label l6 = new Label();
-            mv.visitJumpInsn(GOTO, l6);
+            Label l7 = new Label();
+            mv.visitJumpInsn(GOTO, l7);
             mv.visitLabel(l0);
-            mv.visitLineNumber(38, l0);
-            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+ 
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKESTATIC, "javax/swing/SwingUtilities", "invokeAndWait", "(Ljava/lang/Runnable;)V", false);
             mv.visitLabel(l1);
-            mv.visitLineNumber(43, l1);
-            mv.visitJumpInsn(GOTO, l6);
+ 
+            mv.visitJumpInsn(GOTO, l7);
             mv.visitLabel(l2);
-            mv.visitLineNumber(39, l2);
-            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/InterruptedException"});
+ 
             mv.visitVarInsn(ASTORE, 2);
-            Label l7 = new Label();
-            mv.visitLabel(l7);
-            mv.visitLineNumber(40, l7);
+            Label l8 = new Label();
+            mv.visitLabel(l8);
+ 
             mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
             mv.visitInsn(DUP);
             mv.visitVarInsn(ALOAD, 2);
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V", false);
             mv.visitInsn(ATHROW);
             mv.visitLabel(l3);
-            mv.visitLineNumber(41, l3);
-            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/reflect/InvocationTargetException"});
+ 
             mv.visitVarInsn(ASTORE, 2);
-            Label l8 = new Label();
-            mv.visitLabel(l8);
-            mv.visitLineNumber(42, l8);
+            Label l9 = new Label();
+            mv.visitLabel(l9);
+ 
             mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
             mv.visitInsn(DUP);
             mv.visitVarInsn(ALOAD, 2);
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V", false);
             mv.visitInsn(ATHROW);
-            mv.visitLabel(l6);
-            mv.visitLineNumber(46, l6);
-            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+            mv.visitLabel(l7);
+ 
             mv.visitInsn(RETURN);
-            Label l9 = new Label();
-            mv.visitLabel(l9);
-            mv.visitLocalVariable("var3", "Ljava/lang/InterruptedException;", null, l7, l3, 2);
-            mv.visitLocalVariable("var4", "Ljava/lang/reflect/InvocationTargetException;", null, l8, l6, 2);
-            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, l4, l9, 0);
-            mv.visitLocalVariable("runnable", "Ljava/lang/Runnable;", null, l4, l9, 1);
+            Label l10 = new Label();
+            mv.visitLabel(l10);
+            mv.visitLocalVariable("var3", "Ljava/lang/InterruptedException;", null, l8, l3, 2);
+            mv.visitLocalVariable("var4", "Ljava/lang/reflect/InvocationTargetException;", null, l9, l7, 2);
+            mv.visitLocalVariable("this", "Lcom/eviware/soapui/support/swing/SwingUtils;", null, l4, l10, 0);
+            mv.visitLocalVariable("runnable", "Ljava/lang/Runnable;", null, l4, l10, 1);
             mv.visitMaxs(3, 3);
             mv.visitEnd();
         }
@@ -144,7 +143,7 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel(l0);
-            mv.visitLineNumber(75, l0);
+ 
             mv.visitInsn(RETURN);
             Label l1 = new Label();
             mv.visitLabel(l1);
@@ -157,7 +156,7 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel(l0);
-            mv.visitLineNumber(78, l0);
+ 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitLdcInsn(new Integer(2147483646));
             mv.visitVarInsn(ALOAD, 1);
@@ -175,14 +174,14 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel(l0);
-            mv.visitLineNumber(82, l0);
+ 
             mv.visitTypeInsn(NEW, "java/util/ArrayList");
             mv.visitInsn(DUP);
             mv.visitMethodInsn(INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V", false);
             mv.visitVarInsn(ASTORE, 3);
             Label l1 = new Label();
             mv.visitLabel(l1);
-            mv.visitLineNumber(83, l1);
+ 
             mv.visitVarInsn(ALOAD, 3);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ILOAD, 1);
@@ -190,7 +189,7 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitMethodInsn(INVOKESTATIC, "com/eviware/soapui/support/swing/SwingUtils", "internalFindAllComponentsRecursively", "(Ljava/util/List;Ljava/awt/Container;I[Ljava/lang/Class;)V", false);
             Label l2 = new Label();
             mv.visitLabel(l2);
-            mv.visitLineNumber(84, l2);
+ 
             mv.visitVarInsn(ALOAD, 3);
             mv.visitInsn(ARETURN);
             Label l3 = new Label();
@@ -207,13 +206,13 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel(l0);
-            mv.visitLineNumber(88, l0);
+ 
             mv.visitVarInsn(ILOAD, 2);
             Label l1 = new Label();
             mv.visitJumpInsn(IFLT, l1);
             Label l2 = new Label();
             mv.visitLabel(l2);
-            mv.visitLineNumber(90, l2);
+ 
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/awt/Container", "getComponents", "()[Ljava/awt/Component;", false);
             mv.visitInsn(DUP);
@@ -224,55 +223,53 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitVarInsn(ISTORE, 5);
             Label l4 = new Label();
             mv.visitLabel(l4);
-            mv.visitLineNumber(92, l4);
+ 
             mv.visitInsn(ICONST_0);
             mv.visitVarInsn(ISTORE, 6);
             Label l5 = new Label();
             mv.visitLabel(l5);
-            mv.visitFrame(Opcodes.F_APPEND, 3, new Object[]{"[Ljava/awt/Component;", Opcodes.INTEGER, Opcodes.INTEGER}, 0, null);
             mv.visitVarInsn(ILOAD, 6);
             mv.visitVarInsn(ILOAD, 5);
             mv.visitJumpInsn(IF_ICMPGE, l1);
             Label l6 = new Label();
             mv.visitLabel(l6);
-            mv.visitLineNumber(93, l6);
+ 
             mv.visitVarInsn(ALOAD, 4);
             mv.visitVarInsn(ILOAD, 6);
             mv.visitInsn(AALOAD);
             mv.visitVarInsn(ASTORE, 7);
             Label l7 = new Label();
             mv.visitLabel(l7);
-            mv.visitLineNumber(94, l7);
+ 
             mv.visitVarInsn(ALOAD, 3);
             mv.visitVarInsn(ASTORE, 8);
             Label l8 = new Label();
             mv.visitLabel(l8);
-            mv.visitLineNumber(95, l8);
+ 
             mv.visitVarInsn(ALOAD, 3);
             mv.visitInsn(ARRAYLENGTH);
             mv.visitVarInsn(ISTORE, 9);
             Label l9 = new Label();
             mv.visitLabel(l9);
-            mv.visitLineNumber(97, l9);
+ 
             mv.visitInsn(ICONST_0);
             mv.visitVarInsn(ISTORE, 10);
             Label l10 = new Label();
             mv.visitLabel(l10);
-            mv.visitFrame(Opcodes.F_FULL, 11, new Object[]{"java/util/List", "java/awt/Container", Opcodes.INTEGER, "[Ljava/lang/Class;", "[Ljava/awt/Component;", Opcodes.INTEGER, Opcodes.INTEGER, "java/awt/Component", "[Ljava/lang/Class;", Opcodes.INTEGER, Opcodes.INTEGER}, 0, new Object[]{});
             mv.visitVarInsn(ILOAD, 10);
             mv.visitVarInsn(ILOAD, 9);
             Label l11 = new Label();
             mv.visitJumpInsn(IF_ICMPGE, l11);
             Label l12 = new Label();
             mv.visitLabel(l12);
-            mv.visitLineNumber(98, l12);
+ 
             mv.visitVarInsn(ALOAD, 8);
             mv.visitVarInsn(ILOAD, 10);
             mv.visitInsn(AALOAD);
             mv.visitVarInsn(ASTORE, 11);
             Label l13 = new Label();
             mv.visitLabel(l13);
-            mv.visitLineNumber(99, l13);
+ 
             mv.visitVarInsn(ALOAD, 11);
             Label l14 = new Label();
             mv.visitJumpInsn(IFNULL, l14);
@@ -282,42 +279,40 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitJumpInsn(IFEQ, l14);
             Label l15 = new Label();
             mv.visitLabel(l15);
-            mv.visitLineNumber(100, l15);
+ 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 7);
             mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
             mv.visitInsn(POP);
             Label l16 = new Label();
             mv.visitLabel(l16);
-            mv.visitLineNumber(101, l16);
+ 
             mv.visitJumpInsn(GOTO, l11);
             mv.visitLabel(l14);
-            mv.visitLineNumber(97, l14);
-            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+ 
             mv.visitIincInsn(10, 1);
             mv.visitJumpInsn(GOTO, l10);
             mv.visitLabel(l11);
-            mv.visitLineNumber(105, l11);
-            mv.visitFrame(Opcodes.F_CHOP, 1, null, 0, null);
+ 
             mv.visitVarInsn(ALOAD, 7);
             mv.visitTypeInsn(INSTANCEOF, "java/awt/Container");
             Label l17 = new Label();
             mv.visitJumpInsn(IFEQ, l17);
             Label l18 = new Label();
             mv.visitLabel(l18);
-            mv.visitLineNumber(106, l18);
+ 
             mv.visitVarInsn(ALOAD, 7);
             mv.visitTypeInsn(CHECKCAST, "java/awt/Container");
             mv.visitVarInsn(ASTORE, 10);
             Label l19 = new Label();
             mv.visitLabel(l19);
-            mv.visitLineNumber(107, l19);
+ 
             mv.visitVarInsn(ALOAD, 10);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/awt/Container", "getComponentCount", "()I", false);
             mv.visitJumpInsn(IFLE, l17);
             Label l20 = new Label();
             mv.visitLabel(l20);
-            mv.visitLineNumber(108, l20);
+ 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 10);
             mv.visitVarInsn(ILOAD, 2);
@@ -326,13 +321,11 @@ public class SwingUtilsDump implements Opcodes {
             mv.visitVarInsn(ALOAD, 3);
             mv.visitMethodInsn(INVOKESTATIC, "com/eviware/soapui/support/swing/SwingUtils", "internalFindAllComponentsRecursively", "(Ljava/util/List;Ljava/awt/Container;I[Ljava/lang/Class;)V", false);
             mv.visitLabel(l17);
-            mv.visitLineNumber(92, l17);
-            mv.visitFrame(Opcodes.F_CHOP, 3, null, 0, null);
+ 
             mv.visitIincInsn(6, 1);
             mv.visitJumpInsn(GOTO, l5);
             mv.visitLabel(l1);
-            mv.visitLineNumber(114, l1);
-            mv.visitFrame(Opcodes.F_CHOP, 3, null, 0, null);
+ 
             mv.visitInsn(RETURN);
             Label l21 = new Label();
             mv.visitLabel(l21);

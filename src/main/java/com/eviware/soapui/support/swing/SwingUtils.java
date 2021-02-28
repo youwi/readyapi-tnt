@@ -8,17 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import com.eviware.soapui.support.UIUtils;
-
-import java.awt.Component;
-import java.awt.Container;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.SwingUtilities;
-
-public class SwingUtilsCrackPlanC implements UIUtils {
+public class SwingUtils implements UIUtils {
 
     public void invokeLater(Runnable runnable) {
         SwingUtilities.invokeLater(runnable);
@@ -73,12 +63,12 @@ public class SwingUtilsCrackPlanC implements UIUtils {
         //});
     }
 
-    public static java.util.List<Component> findAllComponentsRecursively(Container container, Class<? extends Component>... filter) {
+    public static List<Component> findAllComponentsRecursively(Container container, Class<? extends Component>... filter) {
         return findAllComponentsRecursively(container, 2147483646, filter);
     }
 
-    public static java.util.List<Component> findAllComponentsRecursively(Container container, int depth, Class<? extends Component>... filter) {
-        java.util.List<Component> result = new ArrayList();
+    public static List<Component> findAllComponentsRecursively(Container container, int depth, Class<? extends Component>... filter) {
+        List<Component> result = new ArrayList();
         internalFindAllComponentsRecursively(result, container, depth, filter);
         return result;
     }

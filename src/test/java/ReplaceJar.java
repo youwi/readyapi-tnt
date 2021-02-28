@@ -11,16 +11,21 @@ public class ReplaceJar {
 
         byClassFullName("com.jp.protection.pub.LicenseReader");
         //byClassFullNamePlanB("com.jp.protection.pub.LicenseReader");
-        byClassFullNamePlanC("com.jp.protection.pub.LicenseReader");
+        //byClassFullNamePlanC("com.jp.protection.pub.LicenseReader");
 
         byClassFullName("com.smartbear.ready.module.ConcurrentXmlLoadProcess");
 
         byClassFullName("com.smartbear.ready.license.LicenseBootstrap");
 
         // byClassFullName("com.eviware.soapui.support.swing.SwingUtils");
+        // byClassFullNameCrackPlanC("com.eviware.soapui.support.swing.SwingUtils");
 
-        byClassFullNameCrackPlanC("com.eviware.soapui.support.swing.SwingUtils");
+    }
 
+    public void byClassFullNameCrackPlanB(String classFullName) throws Exception {
+        String className = Class.forName(classFullName).getSimpleName();
+        JarZipUtil.classToZipFile("lib/", PlanA.echoClassInnerPath(classFullName)
+                , className + "CrackPlanCDumpFix.class");
     }
 
     public void byClassFullNameCrackPlanC(String classFullName) throws Exception {

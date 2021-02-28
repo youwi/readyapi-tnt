@@ -3,7 +3,6 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Method;
 
 /**
  * readyapi-tnt
@@ -15,7 +14,7 @@ public class PlanFixExit {
     public void fixExitTestByAsmCode() throws Exception {
         String fileCoreName = "ConcurrentXmlLoadProcess";
 
-        PlanA.javaToAsmSource("com.smartbear.ready.module.ConcurrentXmlLoadProcess");
+        PlanA.classToAsmSource("com.smartbear.ready.module.ConcurrentXmlLoadProcess");
 
         String matchStringA = "methodVisitor.visitLdcInsn(\"ex\")";
         String matchStringB = "methodVisitor.visitLdcInsn(\"it\")";
@@ -37,7 +36,7 @@ public class PlanFixExit {
     @Test
     public void fixLicenseBootstrapTest() throws Exception {
         String fileCoreName = "LicenseBootstrap";
-        PlanA.javaToAsmSource("com.smartbear.ready.license.LicenseBootstrap");
+        PlanA.classToAsmSource("com.smartbear.ready.license.LicenseBootstrap");
         String oriString = PlanA.readFileToString("src/test/java/gen/" + fileCoreName + "Dump.java");
 
         String out = oriString.replace("methodVisitor.visitMethodInsn(INVOKESTATIC, \"com/eviware/soapui/support/swing/SwingUtils\", \"exit\", \"(I)V\", false);\n", "");
@@ -52,7 +51,7 @@ public class PlanFixExit {
          * 直接注释一行代码
          */
         String fileCoreName = "SwingUtils";
-        PlanA.javaToAsmSource("com.eviware.soapui.support.swing.SwingUtils");
+        PlanA.classToAsmSource("com.eviware.soapui.support.swing.SwingUtils");
         String oriString = PlanA.readFileToString("src/test/java/gen/" + fileCoreName + "Dump.java");
 
         String gcString = "methodVisitor.visitMethodInsn(INVOKESTATIC, \"java/lang/System\", \"gc\", null, false);";
@@ -73,8 +72,8 @@ public class PlanFixExit {
          */
         String fileCoreName = "SwingUtils";
 
-        PlanA.javaToAsmSource("com.eviware.soapui.support.swing.SwingUtils");
-        PlanA.javaToAsmSource("com.eviware.soapui.support.swing.SwingUtilsCrack");
+        PlanA.classToAsmSource("com.eviware.soapui.support.swing.SwingUtils");
+        PlanA.classToAsmSource("com.eviware.soapui.support.swing.SwingUtilsCrack");
 
         String oriString = PlanA.readFileToString("src/test/java/gen/" + fileCoreName + "Dump.java");
         String craString = PlanA.readFileToString("src/test/java/gen/" + fileCoreName + "CrackDump.java");
@@ -95,12 +94,15 @@ public class PlanFixExit {
     @Test
     void fixSwingUtilsTestPlanC() throws Exception {
         String fileCoreName = "SwingUtilsCrackPlanC";
-        PlanA.javaToAsmSource("com.eviware.soapui.support.swing.SwingUtilsCrackPlanC");
+        PlanA.classToAsmSource("com.eviware.soapui.support.swing.SwingUtilsCrackPlanC");
         String oriString = PlanA.readFileToString("src/test/java/gen/" + fileCoreName + "Dump.java");
 
         String out = oriString.replace("SwingUtilsCrackPlanC", "SwingUtils");
         out = out.replace("public class SwingUtilsDump", "public class SwingUtilsCrackPlanCDump");
         saveDumpFixJavaFile(fileCoreName, out);
+        /* 这里有运行时bug. asm并不生成visitFrame语句,导致无法运行.
+         *
+         */
         loadAsmClassAndRunDump(fileCoreName + "DumpFix");
     }
 
