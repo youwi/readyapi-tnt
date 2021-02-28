@@ -13,10 +13,10 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 dependencies {
-    implementation fileTree(dir: appRoot + '/lib', include: ['ready-api*.jar'])
-    implementation fileTree(dir: appRoot + '/lib', include: ['Pro*.jar',"load*.jar"])
+    implementation fileTree(dir: 'lib', include: ['*.jar'],excludes: ["*-crack.jar"])
 
-    implementation fileTree(dir: 'lib', include: ['*.jar'])
+    implementation fileTree(dir: appRoot + '/lib', include: ['ready-api*.jar'],excludes: ["*-crack.jar"])
+    implementation fileTree(dir: appRoot + '/lib', include: ['Pro*.jar', "load*.jar","analytics*.jar","slf*.jar"],excludes: ["*-crack.jar"])
 
     compile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     compile 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
@@ -32,132 +32,24 @@ defaultTasks 'test'
 test {
     useJUnitPlatform()
 }
-task zipTheFile {
-    doLast {
-        classToZipFile("Fake.class")
-    }
-}
 
-task zipTheFilePlanB {
-    doLast {
-        classToZipFile("FakePlanB.class")
-    }
-}
-task zipTheFilePlanC {
-    doLast {
-        classToZipFile("FakePlanC.class")
-    }
-}
 
 task copyToSystem(type: Copy) {
     from 'Protection-5.1.5-crack.jar'
-    into appRoot+'/lib/'
+    into appRoot + '/lib/'
 }
 task copyToSystemFixExit(type: Copy) {
     from 'ready-api-ui-3.6.0-crack.jar'
-    into appRoot+'/bin/'
+    into appRoot + '/bin/'
 }
 
 task copyOldJar(type: Copy) {
     from 'lib/Protection-5.1.5.jar'
-    into appRoot+'/lib/'
+    into appRoot + '/lib/'
 }
 task backUpProtectionJar {
     doLast {
-        file(appRoot+"/lib/Protection-5.1.5.jar").renameTo(file(appRoot+"/lib/Protection-5.1.5.jar.bak"));
+        file(appRoot + "/lib/Protection-5.1.5.jar").renameTo(file(appRoot + "/lib/Protection-5.1.5.jar.bak"));
     }
 }
 
-task zipReadyApiUIJar {
-    doLast {
-        classToZipFile("lib/ready-api-ui-3.6.0.jar", "com/smartbear/ready/module/ConcurrentXmlLoadProcess.class", "ConcurrentXmlLoadProcess"+"DumpFix.class")
-    }
-}
-
-task zipReadyApiLicenseJar {
-    doLast {
-        classToZipFile("lib/ready-api-license-3.6.0.jar", "com/smartbear/ready/license/LicenseBootstrap.class", "LicenseBootstrap"+"DumpFix.class")
-    }
-}
-
-task zipReadyApiSoapUIJar {
-    doLast {
-        classToZipFile("lib/ready-api-soapui-3.6.0.jar", "com/smartbear/ready/license/LicenseBootstrap.class", "LicenseBootstrap"+"DumpFix.class")
-    }
-}
-
-
-def void classToZipFile(classFileName) {
-    classToZipFile("lib/Protection-5.1.5.jar", "com/jp/protection/pub/LicenseReader.class", classFileName)
-}
-/**
- * 复制class文件到zip文件中,替换LicenseReader.class
- * 默认路径为:lib/Protection-5.1.5.jar
- * 默认文件名:Protection-5.1.5-crack.jar
- */
-def void classToZipFile(String zipFileName, classFullName, String tmpClassFileName) {
-    try {
-
-        def zipIn = new File(zipFileName)
-        if (!zipIn.exists()) {
-            println zipFileName + "文件不存在"
-        }
-        if (!new File(tmpClassFileName).exists()) {
-            println tmpClassFileName + "文件不存在"
-            return
-        }
-
-        def zip = new ZipFile(zipIn)
-        def zipTemp = File.createTempFile('tmp', '.jar', new File('./'))
-        zipTemp.deleteOnExit()
-        def zos = new ZipOutputStream(new FileOutputStream(zipTemp))
-
-        for (thisEntry in zip.entries()) {
-            if (!thisEntry.name.equalsIgnoreCase(classFullName)) {
-                def input = zip.getInputStream(thisEntry)
-                zos.putNextEntry(new ZipEntry(thisEntry.name))
-                zos << input.bytes
-            } else {
-                println "找到匹配文件"
-                zos.putNextEntry(new ZipEntry(thisEntry.name))
-                def classFile = new File(tmpClassFileName)
-                if (classFile.exists()) {
-                    def newIs = new FileInputStream(classFile)
-                    zos << newIs.bytes
-                } else {
-                    println "class文件先由测试代码生成"
-                }
-            }
-            try {
-                zos.closeEntry();
-            } catch (e) {
-                System.err.println(thisEntry.name)
-                System.err.println(e.getMessage())
-            }
-        }
-        zos.close()
-        zip.close()
-        zipTemp.renameTo(zipFileName.replace("lib/", "").replace(".jar", "-crack.jar"))
-
-    } catch (e) {
-        System.err.println("${zipFileName} ${classFullName}" + e.getCause() + " " + e.getMessage())
-        e.printStackTrace()
-
-    }
-
-}
-
-def copyZipContent(String fileNameOri, String fileNameTarget) {
-    ZipInputStream zis = new ZipInputStream(new FileInputStream(new File(fileNameOri)))
-    ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(new File(fileNameTarget)))
-    ZipEntry zisEntry;
-    while ((zisEntry = zis.getNextEntry()) != null) {
-        ZipEntry zosEntry = new ZipEntry(zisEntry.getName());
-        zosEntry.setComment(zisEntry.getComment());
-        zosEntry.setExtra(zisEntry.getExtra());
-        zos.putNextEntry(zosEntry);
-        zos << zis
-        zos.closeEntry();
-    }
-    zos.finish();
-}

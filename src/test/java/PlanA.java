@@ -51,6 +51,27 @@ public class PlanA {
     }
 
     /**
+     * 获取路径命名
+     * @param classFullName
+     * @throws Exception
+     */
+    public static String echoClassJarName(String classFullName) throws Exception {
+        return Class.forName(classFullName).getProtectionDomain().getCodeSource().getLocation().getFile();
+    }
+    /**
+     * 把类名,转换为路径名
+     * @param classFullName
+     * @return
+     * @throws Exception
+     */
+    public static String echoClassInnerPath(String classFullName) throws Exception {
+        Class clazz = Class.forName(classFullName);
+        String dir = clazz.getPackage().getName().replace(".", "/");
+        return dir + "/" + clazz.getSimpleName()+".class";
+    }
+
+
+    /**
      * 搜索并替换asm代码中的函数
      *
      * @param oriString   代码源

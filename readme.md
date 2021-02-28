@@ -74,9 +74,11 @@
     readyapi-api-ui-version.jar:com.smartbear.ready.module.ConcurrentXmlLoadProcess
 
     直接调用了:SwingUtils.exit(9)
-    readyapi-soapui-pro-version.jar:com.smartbear.ready.module.ToolbarActionAssistant;
     readyapi-licnese-version.jar :com.smartbear.ready.license.LicenseBootstrap
 
     SwingUtils.exit(0);
     readyapi-soapui-version.jar  :com.eviware.soapui.support.swing.SwingUtils
+
+    readyapi-soapui-pro-version.jar:com.smartbear.ready.module.ToolbarActionAssistant;
+
     
