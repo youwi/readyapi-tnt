@@ -30,7 +30,7 @@ public class PlanA {
 
         // 修正类型不一致
         out = out.replace("LicenseReaderCrack", "LicenseReader");
-
+        out = out.replaceAll("methodVisitor.visitFrame(.*?);","");// java5不要这个visitFrame
         PlanFixExit.saveDumpFixJavaFile(fileCoreName, out);
         PlanFixExit.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
 
@@ -70,15 +70,15 @@ public class PlanA {
 
     /**
      * 搜索并替换asm代码中的函数
-     *
+     * 按  {代码块} 替换
      * @param oriString   代码源
      * @param craString   替换源
      * @param matchString 搜索要替换的函数
      */
     static String replaceStringAt(String oriString, String craString, String matchString) {
         //oriString+" "添加空字符原因是最后一个会出bug
-        String[] oriStrings = (oriString+" ").split("\\}");
-        String[] craStrings = (craString+" ").split("\\}");
+        String[] oriStrings = (oriString+"\n ").split("\\}\n");
+        String[] craStrings = (craString+"\n ").split("\\}\n");
         StringBuilder outString = new StringBuilder();
 
         for (int i = 0; i < oriStrings.length; i++) {
@@ -97,7 +97,7 @@ public class PlanA {
             String tmpString = oriStrings[i];
             outString.append(tmpString);
             if(i==oriStrings.length-1) break;
-            outString.append("}");
+            outString.append("}\n");
         }
         return outString.toString().trim();
     }
@@ -105,13 +105,9 @@ public class PlanA {
     @Test
     void replaceStringAtTest() {
         String out;
-        out = replaceStringAt("{A}{B}{C}", "{XB}", "B");
+        out = replaceStringAt("{A}\n{B}\n{C}", "{XB}", "B");
         System.out.println(out);
-        assert out.equals("{A}{XB}{C}");
-
-        out = replaceStringAt("{A}{B}{C}}\n\n", "{XB}", "B");
-        System.out.println(out);
-        assert out.equals("{A}{XB}{C}}");
+        assert out.equals("{A}\n{XB}\n{C}");
     }
 
     /**

@@ -14,7 +14,7 @@ targetCompatibility = 1.7
 sourceSets {
     main {
         java {
-            // exclude 'com/eviware/soapui/support/swing/SwingUtils.java'
+            exclude 'com/eviware/soapui/support/swing/SwingUtils.java'
         }
     }
 }

@@ -18,7 +18,7 @@ public class ReplaceJar {
         byClassFullName("com.smartbear.ready.license.LicenseBootstrap");
 
         // byClassFullName("com.eviware.soapui.support.swing.SwingUtils");
-        // byClassFullNameCrackPlanC("com.eviware.soapui.support.swing.SwingUtils");
+        byClassFullNameCrackPlanC("com.eviware.soapui.support.swing.SwingUtils");
 
     }
 
