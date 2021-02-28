@@ -18,8 +18,10 @@ import static org.objectweb.asm.Opcodes.V1_5;
 public class PlanB {
 
     @Test
-    void byByteCode() throws IOException {
+    void byByteCode() throws Exception {
         // 操作字节码,
+        String fileCoreName = "LicenseReaderPlanC";
+
         ClassReader classReaderOri = new ClassReader("com.jp.protection.pub.LicenseReader");
 
         ClassReader classReaderCrack = new ClassReader("com.jp.protection.pub.LicenseReaderCrack");
@@ -30,9 +32,14 @@ public class PlanB {
         classReaderOri.accept(injectMethodVisitor, 0);
         classReaderCrack.accept(injectMethodVisitor, 0);
 
-        FileOutputStream fileOutputStream = new FileOutputStream(new File("FakePlanB.class"));
-        fileOutputStream.write(cw.toByteArray());
-        fileOutputStream.flush();
+
+        //PlanA.javaToAsmSource("com.jp.protection.pub.LicenseReader");
+        //
+        //String out=ori.replace("LicenseReaderDump","LicenseReaderPlanCDump");
+        //
+        //PlanFixExit.saveDumpFixJavaFile(fileCoreName, out);
+        //
+        //PlanFixExit.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
 
     }
 }

@@ -1,14 +1,14 @@
 ##  注意: 代码只为学习和分享,切不要以盈利为目的发布
     本仓库不直接提供破解后的jar包(Protection-5.1.5-crack.jar已经删除)
 
-### 自动版本 目前(readyApi3.6)
+### 自动匹配版本 目前(readyApi3.6)
     soapui36.key  加密key(官方获取) 可以配合A方案
     soapui36.key.txt 明文txt  (调试使用)
     soapui36-decode.key 明文Key(有crc检验),使用代码生成,配合C方案使用.
 
     可以手动替换:com/jp/protection/pub/LicenseReader.class
-    Fake.class 使用A方案
-    FakePlanC.class 使用C方案.
+    LicenseReaderDempFix.class      使用A方案
+    LicenseReaderDempFixPlanC.class 使用C方案.
     方案A的代码使用的是asm替换,以后readyApi升级了,代码一运行就crack了
 
 ### 原理
@@ -69,6 +69,8 @@
     然后打开idea可以远程调试
 
 ## 闪退解决方案:
+要替换其它3个jar包
+
     涉及4个jar包,真是恶心呀..
     使用了反射来调用了System.exit()
     readyapi-api-ui-version.jar:com.smartbear.ready.module.ConcurrentXmlLoadProcess

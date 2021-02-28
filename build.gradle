@@ -35,18 +35,22 @@ test {
 
 
 task copyToSystem(type: Copy) {
-    from 'Protection-5.1.5-crack.jar'
+    from 'lib/Protection-5.1.5-crack.jar'
     into appRoot + '/lib/'
 }
 task copyToSystemFixExit(type: Copy) {
-    from 'ready-api-ui-3.6.0-crack.jar'
+    from 'lib/ready-api-ui-3.6.0-crack.jar'
     into appRoot + '/bin/'
 }
-
-task copyOldJar(type: Copy) {
-    from 'lib/Protection-5.1.5.jar'
+task copyToSystemSoapUiFixExit(type: Copy) {
+    from 'lib/ready-api-soapUi-3.6.0-crack.jar'
     into appRoot + '/lib/'
 }
+task copyToSystemLicense(type: Copy) {
+    from 'lib/ready-api-license-3.6.0-crack.jar'
+    into appRoot + '/lib/'
+}
+
 task backUpProtectionJar {
     doLast {
         file(appRoot + "/lib/Protection-5.1.5.jar").renameTo(file(appRoot + "/lib/Protection-5.1.5.jar.bak"));

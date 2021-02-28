@@ -13,7 +13,7 @@ public class PlanFixExit {
 
     @Test
     public void fixExitTestByAsmCode() throws Exception {
-        String fileCoreName="ConcurrentXmlLoadProcess";
+        String fileCoreName = "ConcurrentXmlLoadProcess";
 
         PlanA.javaToAsmSource("com.smartbear.ready.module.ConcurrentXmlLoadProcess");
 
@@ -25,48 +25,82 @@ public class PlanFixExit {
                 "methodVisitor.visitMethodInsn(INVOKESTATIC, \"com/smartbear/ready/utils/ReflectionUtils\", \"callMethod\", \"(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;\", false);\n";
         String targetString = "methodVisitor.visitMethodInsn(INVOKESTATIC, \"java/lang/Integer\", \"valueOf\", \"(I)Ljava/lang/Integer;\", false);\n" +
                 "methodVisitor.visitInsn(AASTORE);";
-        String oriString = PlanA.readFileToString("src/test/java/gen/"+fileCoreName+"Dump.java");
+        String oriString = PlanA.readFileToString("src/test/java/gen/" + fileCoreName + "Dump.java");
 
         String out = replaceStringAtByBlock(oriString, matchString, targetString, matchStringA);
 
-        saveDumpFixJavaFile(fileCoreName,out);
+        saveDumpFixJavaFile(fileCoreName, out);
 
-        loadAsmClassAndRunDump(fileCoreName+"DumpFix");
+        loadAsmClassAndRunDump(fileCoreName + "DumpFix");
     }
 
     @Test
     public void fixLicenseBootstrapTest() throws Exception {
-        String fileCoreName="LicenseBootstrap";
+        String fileCoreName = "LicenseBootstrap";
         PlanA.javaToAsmSource("com.smartbear.ready.license.LicenseBootstrap");
-        String oriString = PlanA.readFileToString("src/test/java/gen/"+fileCoreName+"Dump.java");
+        String oriString = PlanA.readFileToString("src/test/java/gen/" + fileCoreName + "Dump.java");
 
-        String out = oriString.replace("methodVisitor.visitMethodInsn(INVOKESTATIC, \"com/eviware/soapui/support/swing/SwingUtils\", \"exit\", \"(I)V\", false);\n","");
+        String out = oriString.replace("methodVisitor.visitMethodInsn(INVOKESTATIC, \"com/eviware/soapui/support/swing/SwingUtils\", \"exit\", \"(I)V\", false);\n", "");
 
-        saveDumpFixJavaFile(fileCoreName,out);
-        loadAsmClassAndRunDump(fileCoreName+"DumpFix");
+        saveDumpFixJavaFile(fileCoreName, out);
+        loadAsmClassAndRunDump(fileCoreName + "DumpFix");
     }
-    @Test
-    public void fixSwingUtilsTest() throws Exception {
-        String fileCoreName="SwingUtils";
+
+    // @Test
+    public void fixSwingUtilsTestPlanA() throws Exception {
+        /*
+         * 直接注释一行代码
+         */
+        String fileCoreName = "SwingUtils";
         PlanA.javaToAsmSource("com.eviware.soapui.support.swing.SwingUtils");
-        String oriString = PlanA.readFileToString("src/test/java/gen/"+fileCoreName+"Dump.java");
+        String oriString = PlanA.readFileToString("src/test/java/gen/" + fileCoreName + "Dump.java");
 
-        String out = oriString.replace("methodVisitor.visitMethodInsn(INVOKESTATIC, \"java/lang/System\", \"exit\", \"(I)V\", false);","//--");
+        String gcString = "methodVisitor.visitMethodInsn(INVOKESTATIC, \"java/lang/System\", \"gc\", null, false);";
+        String iload = "methodVisitor.visitVarInsn(ILOAD, 0);\n";
+        String PopString = "methodVisitor.visitInsn(POP);";
+        gcString = PopString;
+        iload = "";
+        String out = oriString.replace(iload + "methodVisitor.visitMethodInsn(INVOKESTATIC, \"java/lang/System\", \"exit\", \"(I)V\", false);", gcString);
 
-        saveDumpFixJavaFile(fileCoreName,out);
-        loadAsmClassAndRunDump(fileCoreName+"DumpFix");
+        saveDumpFixJavaFile(fileCoreName, out);
+        loadAsmClassAndRunDump(fileCoreName + "DumpFix");
+    }
+
+    @Test
+    void fixSwingUtilsTestPlanB() throws Exception {
+        /*
+        直接替换整个代码块,为空方法
+         */
+        String fileCoreName = "SwingUtils";
+
+        PlanA.javaToAsmSource("com.eviware.soapui.support.swing.SwingUtils");
+        PlanA.javaToAsmSource("com.eviware.soapui.support.swing.SwingUtilsCrack");
+
+        String oriString = PlanA.readFileToString("src/test/java/gen/" + fileCoreName + "Dump.java");
+        String craString = PlanA.readFileToString("src/test/java/gen/" + fileCoreName + "CrackDump.java");
+
+        String matchString = "ACC_PUBLIC | ACC_STATIC, \"exit\", \"(I)V\", null, null";
+
+        String out = PlanA.replaceStringAt(oriString, craString, matchString);
+
+        // 修正类型不一致
+        // out = out.replace(fileCoreName + "Crack", fileCoreName);
+
+        PlanFixExit.saveDumpFixJavaFile(fileCoreName, out);
+        PlanFixExit.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
     }
 
     /**
      * 按默认名字保存为DumpFix.java文件
+     *
      * @param fileCoreName 文件名
      * @param data
      * @throws IOException
      */
-    static void saveDumpFixJavaFile(String fileCoreName,String data) throws IOException {
+    static void saveDumpFixJavaFile(String fileCoreName, String data) throws IOException {
         data = data.replaceAll("package asm.(.*?);", "//");
-        data = data.replace(fileCoreName+"Dump", fileCoreName+"DumpFix");
-        PlanA.stringToFile(data, "src/test/java/gen/"+fileCoreName+"DumpFix.java");
+        data = data.replace(fileCoreName + "Dump", fileCoreName + "DumpFix");
+        PlanA.stringToFile(data, "src/test/java/gen/" + fileCoreName + "DumpFix.java");
     }
 
     /**
@@ -102,12 +136,13 @@ public class PlanFixExit {
 
     /**
      * 使用反射运行生成为DumpFix.dump()方法
+     *
      * @param fileClassName
      * @throws Exception
      */
     public static void loadAsmClassAndRunDump(String fileClassName) throws Exception {
         byte[] s = (byte[]) Class.forName(fileClassName).getMethod("dump").invoke(null);
-        FileOutputStream fileOutputStream = new FileOutputStream(new File(fileClassName+".class"));
+        FileOutputStream fileOutputStream = new FileOutputStream(new File(fileClassName + ".class"));
         fileOutputStream.write(s);
         fileOutputStream.flush();
     }

@@ -52,14 +52,17 @@ public class PlanA {
 
     /**
      * 获取路径命名
+     *
      * @param classFullName
      * @throws Exception
      */
     public static String echoClassJarName(String classFullName) throws Exception {
         return Class.forName(classFullName).getProtectionDomain().getCodeSource().getLocation().getFile();
     }
+
     /**
      * 把类名,转换为路径名
+     *
      * @param classFullName
      * @return
      * @throws Exception
@@ -67,7 +70,7 @@ public class PlanA {
     public static String echoClassInnerPath(String classFullName) throws Exception {
         Class clazz = Class.forName(classFullName);
         String dir = clazz.getPackage().getName().replace(".", "/");
-        return dir + "/" + clazz.getSimpleName()+".class";
+        return dir + "/" + clazz.getSimpleName() + ".class";
     }
 
 
@@ -79,8 +82,9 @@ public class PlanA {
      * @param matchString 搜索要替换的函数
      */
     static String replaceStringAt(String oriString, String craString, String matchString) {
-        String[] oriStrings = oriString.split("\\}");
-        String[] craStrings = craString.split("\\}");
+        //oriString+" "添加空字符原因是最后一个会出bug
+        String[] oriStrings = (oriString+" ").split("\\}");
+        String[] craStrings = (craString+" ").split("\\}");
         StringBuilder outString = new StringBuilder();
 
         for (int i = 0; i < oriStrings.length; i++) {
@@ -98,13 +102,23 @@ public class PlanA {
         for (int i = 0; i < oriStrings.length; i++) {
             String tmpString = oriStrings[i];
             outString.append(tmpString);
-            if (i > 0) {
-                outString.append("}");
-            }
+            if(i==oriStrings.length-1) break;
+            outString.append("}");
         }
-        return outString.toString();
+        return outString.toString().trim();
     }
 
+    @Test
+    void replaceStringAtTest() {
+        String out;
+        out = replaceStringAt("{A}{B}{C}", "{XB}", "B");
+        System.out.println(out);
+        assert out.equals("{A}{XB}{C}");
+
+        out = replaceStringAt("{A}{B}{C}}\n\n", "{XB}", "B");
+        System.out.println(out);
+        assert out.equals("{A}{XB}{C}}");
+    }
 
     /**
      * 把字节码转换为asm源码,文件保存到 src/test/java目录下.
