@@ -33,7 +33,7 @@ classWriter.visitInnerClass("com/jp/protection/pub/LicenseReader$Storage", "com/
 {
 fieldVisitor = classWriter.visitField(ACC_PRIVATE | ACC_TRANSIENT, "fLicenseReaderListeners", "Ljava/util/Vector;", null, null);
 fieldVisitor.visitEnd();
-
+}
 {
 fieldVisitor = classWriter.visitField(ACC_PROTECTED, "fLicense", "Lcom/jp/protection/pub/License;", null, null);
 fieldVisitor.visitEnd();
@@ -2932,6 +2932,5 @@ methodVisitor.visitEnd();
 classWriter.visitEnd();
 
 return classWriter.toByteArray();
-}
 }
 }
