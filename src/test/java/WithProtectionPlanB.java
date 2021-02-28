@@ -4,10 +4,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import static org.objectweb.asm.Opcodes.ASM4;
 import static org.objectweb.asm.Opcodes.V1_5;
 
@@ -15,7 +11,7 @@ import static org.objectweb.asm.Opcodes.V1_5;
  * readapi3.6-tnt
  * Created by yu on 2021/2/27.
  */
-public class PlanB {
+public class WithProtectionPlanB {
 
     @Test
     void byByteCode() throws Exception {
@@ -37,9 +33,9 @@ public class PlanB {
         //
         //String out=ori.replace("LicenseReaderDump","LicenseReaderPlanCDump");
         //
-        //PlanFixExit.saveDumpFixJavaFile(fileCoreName, out);
+        //JarZipUtil.saveDumpFixJavaFile(fileCoreName, out);
         //
-        //PlanFixExit.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
+        //JarZipUtil.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
 
     }
 }
@@ -57,9 +53,9 @@ class InjectMethodVisitor extends ClassVisitor {
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         if (name.equals("readLicense") && descriptor.equals("([B)V")) {
             if (isOri) {
-                PlanA.publicObject = cv.visitMethod(access, name, descriptor, signature, exceptions);
-            } else if (PlanA.publicObject != null) {
-                return (MethodVisitor) PlanA.publicObject;
+                WithProtectionPlanA.publicObject = cv.visitMethod(access, name, descriptor, signature, exceptions);
+            } else if (WithProtectionPlanA.publicObject != null) {
+                return (MethodVisitor) WithProtectionPlanA.publicObject;
             } else {
                 System.out.println("没有初始化设置isOri");
             }

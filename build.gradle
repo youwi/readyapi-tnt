@@ -1,13 +1,21 @@
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
+
+
 apply plugin: 'java'
 
-version = "1.3.4"
+version = "3.6.0"
+def reversion = '5.1.5'
 group = "com.crack"
 archivesBaseName = "crackSource"
-def appRoot = "/Applications/ReadyAPI-3.6.0.app/Contents/Resources/app/"
-import java.util.zip.*
+def appRoot = "/Applications/ReadyAPI-${version}.app/Contents/Resources/app/"
 
 repositories {
     mavenCentral()
+}
+configurations {
+    custom
 }
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -21,8 +29,8 @@ sourceSets {
 dependencies {
     implementation fileTree(dir: 'lib', include: ['*.jar'], excludes: ["*-crack.jar"])
 
-    implementation fileTree(dir: appRoot + '/lib', include: ['ready-api*.jar'], excludes: ["*-crack.jar"])
-    implementation fileTree(dir: appRoot + '/lib', include: ['Pro*.jar', "load*.jar", "analytics*.jar", "slf*.jar"], excludes: ["*-crack.jar"])
+    implementation fileTree(dir: "${appRoot}/lib", include: ['ready-api*.jar'], excludes: ["*-crack.jar"])
+    implementation fileTree(dir: "${appRoot}/lib", include: ['Pro*.jar', "load*.jar", "analytics*.jar", "slf*.jar"], excludes: ["*-crack.jar"])
 
     compile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     compile 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
@@ -34,35 +42,189 @@ dependencies {
     implementation group: 'org.ow2.asm', name: 'asm-commons', version: '9.1'
 
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
-
 }
-defaultTasks 'test'
 
 test {
     useJUnitPlatform()
 }
 
-
-task copyToSystem(type: Copy) {
-    from 'lib/Protection-5.1.5-crack.jar'
+task copyProtection (type: Copy) {
+    from "lib/Protection-${reversion}-crack.jar"
     into appRoot + '/lib/'
 }
-task copyToSystemReadyApiUi(type: Copy) {
-    from 'lib/ready-api-ui-3.6.0-crack.jar'
+task copyReadyApiUi(type: Copy) {
+    from "lib/ready-api-ui-${version}-crack.jar"
     into appRoot + '/bin/'
 }
-task copyToSystemSoapUiFixExit(type: Copy) {
-    from 'lib/ready-api-soapUi-3.6.0-crack.jar'
+task copyReadyApiSoapUi(type: Copy) {
+    from "lib/ready-api-soapUi-${version}-crack.jar"
     into appRoot + '/lib/'
 }
-task copyToSystemLicense(type: Copy) {
-    from 'lib/ready-api-license-3.6.0-crack.jar'
+task copyReadyApiLicense(type: Copy) {
+    from "lib/ready-api-license-${version}-crack.jar"
     into appRoot + '/lib/'
 }
 
 task backUpProtectionJar {
     doLast {
-        file(appRoot + "/lib/Protection-5.1.5.jar").renameTo(file(appRoot + "/lib/Protection-5.1.5.jar.bak"));
+        file(appRoot + "/lib/Protection-${reversion}.jar").renameTo(file(appRoot + "/lib/Protection-${reversion}.jar.bak"));
     }
 }
 
+task zipProtectionJar {
+    doLast {
+        def classFullName="com.jp.protection.pub.LicenseReader";
+        copyClassToJarFile("lib/Protection-${reversion}.jar", echoClassInnerPath(classFullName), "LicenseReader" + "DumpFix.class");
+    }
+}
+
+task zipProtectionJarPlanB {
+    doLast {
+        def classFullName="com.jp.protection.pub.LicenseReader";
+        copyClassToJarFile("lib/Protection-${reversion}.jar", echoClassInnerPath(classFullName), "LicenseReader" + "PlanBDumpFix.class");
+    }
+}
+
+task zipProtectionJarPlanC {
+    doLast {
+        def classFullName="com.jp.protection.pub.LicenseReader";
+        copyClassToJarFile("lib/Protection-${reversion}.jar", echoClassInnerPath(classFullName), "LicenseReader" + "PlanCDumpFix.class");
+    }
+}
+
+task zipReadyApiUIJar {
+    doLast {
+        def classFullName="com.smartbear.ready.module.ConcurrentXmlLoadProcess";
+        copyClassToJarFile("lib/ready-api-ui-${version}.jar", echoClassInnerPath(classFullName), "ConcurrentXmlLoadProcess" + "DumpFix.class");
+    }
+}
+
+task zipReadyApiLicenseJar {
+    doLast {
+        def classFullName="com.smartbear.ready.license.LicenseBootstrap";
+        copyClassToJarFile("lib/ready-api-license-${version}.jar", echoClassInnerPath(classFullName), "LicenseBootstrap" + "DumpFix.class");
+    }
+}
+
+task zipReadyApiSoapUIJar {
+    doLast {
+        def classFullName="com.eviware.soapui.support.swing.SwingUtils";
+        copyClassToJarFile("lib/ready-api-soapui-${version}.jar", echoClassInnerPath(classFullName), "SwingUtils" + "CrackPlanCDumpFix.class");
+    }
+}
+
+
+/**
+ * 把类名,转换为路径名
+ *
+ * @param classFullName
+ * @return
+ * @throws Exception
+ */
+public static String echoClassInnerPath(String classFullName) throws Exception {
+    return classFullName.split(".").join("/")+".class";
+}
+/**
+ * 复制class文件到zip文件中,替换LicenseReader.class
+ * 默认路径为:lib/Protection-5.1.5.jar
+ * 默认文件名:Protection-5.1.5-crack.jar
+ */
+
+public static void copyClassToJarFile(String zipFileName, String classFullName, String tmpClassFileName) {
+    try {
+        File zipIn = new File(zipFileName);
+        if (!zipIn.exists()) {
+            System.out.println("文件不存在");
+            System.out.println();
+        }
+        if (!new File(tmpClassFileName).exists()) {
+            System.out.println(tmpClassFileName + "文件不存在");
+            System.out.println("class文件先由测试代码生成");
+            return;
+        }
+        ZipFile zip = new ZipFile(zipIn);
+        File zipTemp = File.createTempFile("tmp", ".jar", new File("./"));
+        zipTemp.deleteOnExit();
+        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipTemp));
+
+        final Enumeration<? extends ZipEntry> entries = zip.entries();
+        while (entries.hasMoreElements()) {
+            final ZipEntry thisEntry = entries.nextElement();
+            if (!thisEntry.getName().equalsIgnoreCase(classFullName)) {
+                InputStream input = zip.getInputStream(thisEntry);
+                zos.putNextEntry(new ZipEntry(thisEntry.getName()));
+                zos.write(inputToByteArray(input));
+            } else {
+                System.out.println(zipFileName + ":中找到匹配文件-替换中");
+                zos.putNextEntry(new ZipEntry(thisEntry.getName()));
+                zos.write(fileToBytes(tmpClassFileName));
+            }
+            try {
+                zos.closeEntry();
+            } catch (Exception e) {
+                System.err.println(thisEntry.getName());
+                System.err.println(e.getMessage());
+            }
+        }
+
+        zos.close();
+        zip.close();
+
+        zipTemp.renameTo(new File(zipFileName.replace(".jar", "-crack.jar")));
+
+    } catch (Exception e) {
+        System.err.println(" " + classFullName + e.getCause() + " " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+
+public static byte[] inputToByteArray(InputStream input) throws IOException {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    byte[] buffer = new byte[4096];
+    int n = 0;
+    while (-1 != (n = input.read(buffer))) {
+        output.write(buffer, 0, n);
+    }
+    return output.toByteArray();
+}
+
+public static byte[] fileToBytes(String filePath) {
+    byte[] buffer = null;
+    File file = new File(filePath);
+
+    FileInputStream fis = null;
+    ByteArrayOutputStream bos = null;
+
+    try {
+        fis = new FileInputStream(file);
+        bos = new ByteArrayOutputStream();
+
+        byte[] b = new byte[1024];
+
+        int n;
+
+        while ((n = fis.read(b)) != -1) {
+            bos.write(b, 0, n);
+        }
+
+        buffer = bos.toByteArray();
+    } catch (FileNotFoundException ex) {
+    } catch (IOException ex) {
+    } finally {
+        try {
+            if (null != bos) {
+                bos.close();
+            }
+        } catch (IOException ex) {
+        } finally {
+            try {
+                if (null != fis) {
+                    fis.close();
+                }
+            } catch (IOException ex) {
+            }
+        }
+    }
+
+    return buffer;
+}

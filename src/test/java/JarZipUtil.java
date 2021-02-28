@@ -6,108 +6,75 @@ import java.util.zip.ZipOutputStream;
 
 public class JarZipUtil {
 
+    public static void fffxxxx() {
+
+    }
 
     /**
-     * 复制class文件到zip文件中,替换LicenseReader.class
-     * 默认路径为:lib/Protection-5.1.5.jar
-     * 默认文件名:Protection-5.1.5-crack.jar
+     * 获取路径命名
+     *
+     * @param classFullName
+     * @throws Exception
      */
-    public static void classToZipFile(String zipFileName, String classFullName, String tmpClassFileName) {
-        try {
-            File zipIn = new File(zipFileName);
-            if (!zipIn.exists()) {
-                System.out.println("文件不存在");
-                System.out.println();
-            }
-            if (!new File(tmpClassFileName).exists()) {
-                System.out.println(tmpClassFileName + "文件不存在");
-                System.out.println("class文件先由测试代码生成");
-                return;
-            }
-            ZipFile zip = new ZipFile(zipIn);
-            File zipTemp = File.createTempFile("tmp", ".jar", new File("./"));
-            zipTemp.deleteOnExit();
-            ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipTemp));
-
-            final Enumeration<? extends ZipEntry> entries = zip.entries();
-            while (entries.hasMoreElements()) {
-                final ZipEntry thisEntry = entries.nextElement();
-                if (!thisEntry.getName().equalsIgnoreCase(classFullName)) {
-                    InputStream input = zip.getInputStream(thisEntry);
-                    zos.putNextEntry(new ZipEntry(thisEntry.getName()));
-                    zos.write(inputToByteArray(input));
-                } else {
-                    System.out.println(zipFileName+":中找到匹配文件-替换中");
-                    zos.putNextEntry(new ZipEntry(thisEntry.getName()));
-                    zos.write(fileToBytes(tmpClassFileName));
-                }
-                try {
-                    zos.closeEntry();
-                } catch (Exception e) {
-                    System.err.println(thisEntry.getName());
-                    System.err.println(e.getMessage());
-                }
-            }
-
-            zos.close();
-            zip.close();
-
-            zipTemp.renameTo(new File(zipFileName.replace(".jar", "-crack.jar")));
-
-        } catch (Exception e) {
-            System.err.println(" " + classFullName + e.getCause() + " " + e.getMessage());
-            e.printStackTrace();
-        }
+    public static String echoClassJarName(String classFullName) throws Exception {
+        return Class.forName(classFullName).getProtectionDomain().getCodeSource().getLocation().getFile();
     }
 
-    public static byte[] inputToByteArray(InputStream input) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[4096];
-        int n = 0;
-        while (-1 != (n = input.read(buffer))) {
-            output.write(buffer, 0, n);
-        }
-        return output.toByteArray();
+
+    /**
+     * 按默认名字保存为DumpFix.java文件
+     *
+     * @param fileCoreName 文件名
+     * @param data
+     * @throws IOException
+     */
+    static void saveDumpFixJavaFile(String fileCoreName, String data) throws IOException {
+        data = data.replaceAll("package asm.(.*?);", "//");
+        data = data.replace(fileCoreName + "Dump", fileCoreName + "DumpFix");
+        WithProtectionPlanA.stringToFile(data, "src/test/java/gen/" + fileCoreName + "DumpFix.java");
     }
 
-    public static byte[] fileToBytes(String filePath) {
-        byte[] buffer = null;
-        File file = new File(filePath);
+    /**
+     * 在大段文本中找到小字符串然后替换掉
+     *
+     * @param oriString    原始大文本
+     * @param craString    要替换的小串
+     * @param targetString 替换为
+     * @param matchString  定位串
+     * @return
+     */
+    static String replaceStringAtByBlock(String oriString, String craString, String targetString, String matchString) {
+        String[] oriStrings = oriString.split("\\}");
+        String[] craStrings = craString.split("\\}");
+        StringBuilder outString = new StringBuilder();
 
-        FileInputStream fis = null;
-        ByteArrayOutputStream bos = null;
-
-        try {
-            fis = new FileInputStream(file);
-            bos = new ByteArrayOutputStream();
-
-            byte[] b = new byte[1024];
-
-            int n;
-
-            while ((n = fis.read(b)) != -1) {
-                bos.write(b, 0, n);
-            }
-
-            buffer = bos.toByteArray();
-        } catch (FileNotFoundException ex) {
-        } catch (IOException ex) {
-        } finally {
-            try {
-                if (null != bos) {
-                    bos.close();
-                }
-            } catch (IOException ex) {
-            } finally {
-                try {
-                    if (null != fis) {
-                        fis.close();
-                    }
-                } catch (IOException ex) {
-                }
+        for (int i = 0; i < oriStrings.length; i++) {
+            String tmpString = oriStrings[i];
+            if (tmpString.contains(matchString)) {
+                oriStrings[i] = oriStrings[i].replace(craString, targetString);
             }
         }
+        for (int i = 0; i < oriStrings.length; i++) {
+            String tmpString = oriStrings[i];
+            outString.append(tmpString);
+            if (i > 0) {
+                outString.append("}");
+            }
+        }
+        return outString.toString();
+    }
 
-        return buffer;
+
+    /**
+     * 使用反射运行生成为DumpFix.dump()方法
+     *
+     * @param fileClassName
+     * @throws Exception
+     */
+    public static void loadAsmClassAndRunDump(String fileClassName) throws Exception {
+        byte[] s = (byte[]) Class.forName(fileClassName).getMethod("dump").invoke(null);
+        FileOutputStream fileOutputStream = new FileOutputStream(new File(fileClassName + ".class"));
+        fileOutputStream.write(s);
+        fileOutputStream.flush();
     }
 }

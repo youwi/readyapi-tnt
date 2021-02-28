@@ -56,12 +56,15 @@
 ### build
     gradle build
     gradle test        # 用的测试代码生成class文件
-    gradle zipTheFile   #zipTheFilePlanC #使用C方案.
-    gradle copyToSystem
+    gradle zipProtectionJar   #zipProtectionJarPlanC #使用C方案.
+    gradle copyProtectionJar
+    gradle zipReadyApiUIJar   #解决闪退
+    gradle copyReadyApiUIJar
+
 
 ### 使用.
   1 按官方步骤获取试用key  
-  2 使用代码生成fake.class  
+  2 使用asm代码生成fake.class  
   3 用脚本替换jar包中的class文件
   
 ### 远程调试
@@ -69,6 +72,7 @@
     然后打开idea可以远程调试
 
 ## 闪退解决方案:
+原理是groovy后台调用了System.exit();
 要替换其它3个jar包
 
     涉及4个jar包,真是恶心呀..

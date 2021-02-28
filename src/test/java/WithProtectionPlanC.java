@@ -7,15 +7,15 @@ import java.util.Properties;
  * readapi3.6-tnt
  * Created by yu on 2021/2/26.
  */
-public class PlanC {
+public class WithProtectionPlanC {
     static Object publicObject = null;
 
     @Test
     public void byJavaCodePlanC() throws Exception {
         String fileCoreName = "LicenseReaderPlanC";
-        PlanA.classToAsmSource("com.jp.protection.pub.LicenseReader");
+        WithProtectionPlanA.classToAsmSource("com.jp.protection.pub.LicenseReader");
 
-        String oriString = PlanA.readFileToString("src/test/java/gen/LicenseReaderDump.java");
+        String oriString = WithProtectionPlanA.readFileToString("src/test/java/gen/LicenseReaderDump.java");
 
         String matchString = "methodVisitor.visitInsn(ICONST_0);\nmethodVisitor.visitFieldInsn(PUTFIELD, \"com/jp/protection/pub/LicenseReader\", \"fSkipEncryption\", \"Z\");";
         String newString = "methodVisitor.visitInsn(ICONST_1);\nmethodVisitor.visitFieldInsn(PUTFIELD, \"com/jp/protection/pub/LicenseReader\", \"fSkipEncryption\", \"Z\");";
@@ -23,9 +23,9 @@ public class PlanC {
         String out = oriString.replace(matchString, newString);
         out=out.replace("LicenseReaderDump","LicenseReaderPlanCDump");
 
-        PlanFixExit.saveDumpFixJavaFile(fileCoreName, out);
+        JarZipUtil.saveDumpFixJavaFile(fileCoreName, out);
 
-        PlanFixExit.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
+        JarZipUtil.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
 
     }
 
@@ -56,7 +56,7 @@ public class PlanC {
          * 注意修改文件不能有中文,不能乱加空格和标点符号
          */
 
-        byte[] bytes = PlanA.readFileToString("soapui36.key.txt").getBytes();
+        byte[] bytes = WithProtectionPlanA.readFileToString("soapui36.key.txt").getBytes();
         //替换过期时间
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         Properties properties = new Properties();

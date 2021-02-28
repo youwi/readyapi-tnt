@@ -10,7 +10,7 @@ import java.io.*;
  * readapi3.6-tnt
  * Created by yu on 2021/2/26.
  */
-public class PlanA {
+public class WithProtectionPlanA {
     static Object publicObject = null;
 
     @Test
@@ -31,8 +31,8 @@ public class PlanA {
         // 修正类型不一致
         out = out.replace("LicenseReaderCrack", "LicenseReader");
         out = out.replaceAll("methodVisitor.visitFrame(.*?);","");// java5不要这个visitFrame
-        PlanFixExit.saveDumpFixJavaFile(fileCoreName, out);
-        PlanFixExit.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
+        JarZipUtil.saveDumpFixJavaFile(fileCoreName, out);
+        JarZipUtil.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
 
     }
 
@@ -44,28 +44,7 @@ public class PlanA {
         fileOutputStream.flush();
     }
 
-    /**
-     * 获取路径命名
-     *
-     * @param classFullName
-     * @throws Exception
-     */
-    public static String echoClassJarName(String classFullName) throws Exception {
-        return Class.forName(classFullName).getProtectionDomain().getCodeSource().getLocation().getFile();
-    }
 
-    /**
-     * 把类名,转换为路径名
-     *
-     * @param classFullName
-     * @return
-     * @throws Exception
-     */
-    public static String echoClassInnerPath(String classFullName) throws Exception {
-        Class clazz = Class.forName(classFullName);
-        String dir = clazz.getPackage().getName().replace(".", "/");
-        return dir + "/" + clazz.getSimpleName() + ".class";
-    }
 
 
     /**
