@@ -47,7 +47,7 @@ task copyToSystem(type: Copy) {
     from 'lib/Protection-5.1.5-crack.jar'
     into appRoot + '/lib/'
 }
-task copyToSystemFixExit(type: Copy) {
+task copyToSystemReadyApiUi(type: Copy) {
     from 'lib/ready-api-ui-3.6.0-crack.jar'
     into appRoot + '/bin/'
 }
