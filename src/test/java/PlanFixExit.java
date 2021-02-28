@@ -66,7 +66,7 @@ public class PlanFixExit {
         loadAsmClassAndRunDump(fileCoreName + "DumpFix");
     }
 
-    @Test
+    //@Test
     void fixSwingUtilsTestPlanB() throws Exception {
         /*
         直接替换整个代码块,为空方法
@@ -85,9 +85,23 @@ public class PlanFixExit {
 
         // 修正类型不一致
         // out = out.replace(fileCoreName + "Crack", fileCoreName);
+        out = out.replace("classWriter.visitNestMember(\"com/eviware/soapui/support/swing/SwingUtils$1\");", "");
+        out = out.replace("classWriter.visitInnerClass(\"com/eviware/soapui/support/swing/SwingUtils$1\", null, null, 0);", "");
 
         PlanFixExit.saveDumpFixJavaFile(fileCoreName, out);
         PlanFixExit.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
+    }
+
+    @Test
+    void fixSwingUtilsTestPlanC() throws Exception {
+        String fileCoreName = "SwingUtilsCrackPlanC";
+        PlanA.javaToAsmSource("com.eviware.soapui.support.swing.SwingUtilsCrackPlanC");
+        String oriString = PlanA.readFileToString("src/test/java/gen/" + fileCoreName + "Dump.java");
+
+        String out = oriString.replace("SwingUtilsCrackPlanC", "SwingUtils");
+        out = out.replace("public class SwingUtilsDump", "public class SwingUtilsCrackPlanCDump");
+        saveDumpFixJavaFile(fileCoreName, out);
+        loadAsmClassAndRunDump(fileCoreName + "DumpFix");
     }
 
     /**

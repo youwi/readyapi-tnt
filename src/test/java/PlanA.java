@@ -9,8 +9,7 @@ import org.objectweb.asm.util.TraceClassVisitor;
 
 import java.io.*;
 
-import static org.objectweb.asm.Opcodes.ASM4;
-import static org.objectweb.asm.Opcodes.V1_5;
+import static org.objectweb.asm.Opcodes.*;
 
 /**
  * readapi3.6-tnt
@@ -127,7 +126,9 @@ public class PlanA {
      * @throws IOException
      */
     static void javaToAsmSource(String className) throws IOException {
-        ASMifier sourcePrinter = new ASMifier();
+        ASMifier sourcePrinter = new ASMifier();//ASM7,"vi",4);
+
+
         String[] nameList = className.split("\\.");
         File genFile = new File("src/test/java/gen/" + nameList[nameList.length - 1] + "Dump.java");
 

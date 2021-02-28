@@ -20,6 +20,9 @@ dependencies {
 
     compile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     compile 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+
+  //  compile 'com.google.googlejavaformat:google-java-format:1.9'
+
     implementation group: 'org.ow2.asm', name: 'asm', version: '7.1'
     implementation group: 'org.ow2.asm', name: 'asm-util', version: '7.1'
     implementation group: 'org.ow2.asm', name: 'asm-commons', version: '7.1'

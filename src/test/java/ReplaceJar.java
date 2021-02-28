@@ -18,8 +18,15 @@ public class ReplaceJar {
         byClassFullName("com.smartbear.ready.license.LicenseBootstrap");
 
         byClassFullName("com.eviware.soapui.support.swing.SwingUtils");
-    }
 
+       // byClassFullNameMainClass("com.eviware.soapui.support.swing.SwingUtils");
+
+    }
+    public void byClassFullNameMainClass(String classFullName) throws Exception {
+        String className = Class.forName(classFullName).getSimpleName();
+        JarZipUtil.classToZipFile("lib/ready-api-soapui-3.6.0.jar", PlanA.echoClassInnerPath(classFullName),
+                "build/classes/java/main/"+PlanA.echoClassInnerPath(classFullName));
+    }
 
     public void byClassFullName(String classFullName) throws Exception {
         String className = Class.forName(classFullName).getSimpleName();
