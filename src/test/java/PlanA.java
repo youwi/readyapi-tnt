@@ -20,18 +20,15 @@ public class PlanA {
     static Object publicObject = null;
 
     @Test
-    public void byJavaCode() throws IOException {
+    public void byJavaCode() throws Exception {
         // 操作asm码
-        ASMifier afOri = new ASMifier();
-        ASMifier afCrack = new ASMifier();
-        // ASMifier.main(new String[]{"com.jp.protection.pub.LicenseReader"});
-        String fileCoreName="LicenseReader";
+        String fileCoreName = "LicenseReader";
 
         javaToAsmSource("com.jp.protection.pub.LicenseReader");
         javaToAsmSource("com.jp.protection.pub.LicenseReaderCrack");
 
-        String oriString = readFileToString("src/test/java/LicenseReaderDump.java");
-        String craString = readFileToString("src/test/java/LicenseReaderCrackDump.java");
+        String oriString = readFileToString("src/test/java/gen/LicenseReaderDump.java");
+        String craString = readFileToString("src/test/java/gen/LicenseReaderCrackDump.java");
 
         String matchString = "ACC_PROTECTED, \"readLicense\", \"([B)V\", null, null";
 
@@ -40,7 +37,8 @@ public class PlanA {
         // 修正类型不一致
         out = out.replace("LicenseReaderCrack", "LicenseReader");
 
-        PlanFixExit.saveDumpFixJavaFile(fileCoreName,out);
+        PlanFixExit.saveDumpFixJavaFile(fileCoreName, out);
+        PlanFixExit.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
 
     }
 
@@ -96,7 +94,7 @@ public class PlanA {
     static void javaToAsmSource(String className) throws IOException {
         ASMifier sourcePrinter = new ASMifier();
         String[] nameList = className.split("\\.");
-        File genFile = new File("src/test/java/" + nameList[nameList.length - 1] + "Dump.java");
+        File genFile = new File("src/test/java/gen/" + nameList[nameList.length - 1] + "Dump.java");
 
         if (genFile.exists()) {
             genFile.delete();
@@ -127,15 +125,6 @@ public class PlanA {
         }
         reader.close();
         return fileData.toString();
-    }
-
-
-    @Test
-    public void classDumpTest() throws Exception {
-        byte[] s = (byte[]) Class.forName("LicenseReaderDumpMix").getMethod("dump").invoke(null);
-        FileOutputStream fileOutputStream = new FileOutputStream(new File("Fake.class"));
-        fileOutputStream.write(s);
-        fileOutputStream.flush();
     }
 
 

@@ -13,8 +13,8 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 dependencies {
-    compileOnly fileTree(dir: appRoot + '/lib', include: ['ready-api*.jar'])
-    compileOnly fileTree(dir: appRoot + '/lib', include: ['Pro*.jar',"load*.jar"])
+    implementation fileTree(dir: appRoot + '/lib', include: ['ready-api*.jar'])
+    implementation fileTree(dir: appRoot + '/lib', include: ['Pro*.jar',"load*.jar"])
 
     implementation fileTree(dir: 'lib', include: ['*.jar'])
 
@@ -70,15 +70,22 @@ task backUpProtectionJar {
 
 task zipReadyApiUIJar {
     doLast {
-        classToZipFile("lib/ready-api-ui-3.6.0.jar", "com/smartbear/ready/module/ConcurrentXmlLoadProcess.class", "cxp.class")
+        classToZipFile("lib/ready-api-ui-3.6.0.jar", "com/smartbear/ready/module/ConcurrentXmlLoadProcess.class", "ConcurrentXmlLoadProcess"+"DumpFix.class")
     }
 }
 
 task zipReadyApiLicenseJar {
     doLast {
-        classToZipFile("lib/ready-api-license-3.6.0.jar", "com/smartbear/ready/module/ConcurrentXmlLoadProcess.class", "lbd.class")
+        classToZipFile("lib/ready-api-license-3.6.0.jar", "com/smartbear/ready/license/LicenseBootstrap.class", "LicenseBootstrap"+"DumpFix.class")
     }
 }
+
+task zipReadyApiSoapUIJar {
+    doLast {
+        classToZipFile("lib/ready-api-soapui-3.6.0.jar", "com/smartbear/ready/license/LicenseBootstrap.class", "LicenseBootstrap"+"DumpFix.class")
+    }
+}
+
 
 def void classToZipFile(classFileName) {
     classToZipFile("lib/Protection-5.1.5.jar", "com/jp/protection/pub/LicenseReader.class", classFileName)

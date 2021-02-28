@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 public class PlanFixExit {
 
     @Test
-    public void fixExitTestByAsmCode() throws IOException {
+    public void fixExitTestByAsmCode() throws Exception {
         String fileCoreName="ConcurrentXmlLoadProcess";
 
         PlanA.javaToAsmSource("com.smartbear.ready.module.ConcurrentXmlLoadProcess");
@@ -25,28 +25,48 @@ public class PlanFixExit {
                 "methodVisitor.visitMethodInsn(INVOKESTATIC, \"com/smartbear/ready/utils/ReflectionUtils\", \"callMethod\", \"(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;\", false);\n";
         String targetString = "methodVisitor.visitMethodInsn(INVOKESTATIC, \"java/lang/Integer\", \"valueOf\", \"(I)Ljava/lang/Integer;\", false);\n" +
                 "methodVisitor.visitInsn(AASTORE);";
-        String oriString = PlanA.readFileToString("src/test/java/ConcurrentXmlLoadProcessDump.java");
+        String oriString = PlanA.readFileToString("src/test/java/gen/"+fileCoreName+"Dump.java");
 
         String out = replaceStringAtByBlock(oriString, matchString, targetString, matchStringA);
 
         saveDumpFixJavaFile(fileCoreName,out);
+
+        loadAsmClassAndRunDump(fileCoreName+"DumpFix");
     }
 
     @Test
-    public void fixLicenseBootstrapTest() throws IOException {
+    public void fixLicenseBootstrapTest() throws Exception {
         String fileCoreName="LicenseBootstrap";
         PlanA.javaToAsmSource("com.smartbear.ready.license.LicenseBootstrap");
-
-        String oriString = PlanA.readFileToString("src/test/java/LicenseBootstrapDump.java");
+        String oriString = PlanA.readFileToString("src/test/java/gen/"+fileCoreName+"Dump.java");
 
         String out = oriString.replace("methodVisitor.visitMethodInsn(INVOKESTATIC, \"com/eviware/soapui/support/swing/SwingUtils\", \"exit\", \"(I)V\", false);\n","");
 
         saveDumpFixJavaFile(fileCoreName,out);
+        loadAsmClassAndRunDump(fileCoreName+"DumpFix");
     }
+    @Test
+    public void fixSwingUtilsTest() throws Exception {
+        String fileCoreName="SwingUtils";
+        PlanA.javaToAsmSource("com.eviware.soapui.support.swing.SwingUtils");
+        String oriString = PlanA.readFileToString("src/test/java/gen/"+fileCoreName+"Dump.java");
+
+        String out = oriString.replace("methodVisitor.visitMethodInsn(INVOKESTATIC, \"java/lang/System\", \"exit\", \"(I)V\", false);","//--");
+
+        saveDumpFixJavaFile(fileCoreName,out);
+        loadAsmClassAndRunDump(fileCoreName+"DumpFix");
+    }
+
+    /**
+     * 按默认名字保存为DumpFix.java文件
+     * @param fileCoreName 文件名
+     * @param data
+     * @throws IOException
+     */
     static void saveDumpFixJavaFile(String fileCoreName,String data) throws IOException {
         data = data.replaceAll("package asm.(.*?);", "//");
         data = data.replace(fileCoreName+"Dump", fileCoreName+"DumpFix");
-        PlanA.stringToFile(data, "src/test/java/"+fileCoreName+"DumpFix.java");
+        PlanA.stringToFile(data, "src/test/java/gen/"+fileCoreName+"DumpFix.java");
     }
 
     /**
@@ -80,19 +100,14 @@ public class PlanFixExit {
     }
 
 
-    @Test
-    public void fixClassDumpTest() throws Exception {
-        byte[] s = (byte[]) Class.forName("ConcurrentXmlLoadProcessDumpFix").getMethod("dump").invoke(null);
-
-        FileOutputStream fileOutputStream = new FileOutputStream(new File("cxp.class"));
-        fileOutputStream.write(s);
-        fileOutputStream.flush();
-    }
-
-    @Test
-    public void fixLicenseBootstrapTestDump() throws Exception {
-        byte[] s = (byte[]) Class.forName("LicenseBootstrapDumpFix").getMethod("dump").invoke(null);
-        FileOutputStream fileOutputStream = new FileOutputStream(new File("lbd.class"));
+    /**
+     * 使用反射运行生成为DumpFix.dump()方法
+     * @param fileClassName
+     * @throws Exception
+     */
+    public static void loadAsmClassAndRunDump(String fileClassName) throws Exception {
+        byte[] s = (byte[]) Class.forName(fileClassName).getMethod("dump").invoke(null);
+        FileOutputStream fileOutputStream = new FileOutputStream(new File(fileClassName+".class"));
         fileOutputStream.write(s);
         fileOutputStream.flush();
     }

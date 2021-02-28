@@ -1,4 +1,4 @@
-;
+//
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
@@ -11,7 +11,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.TypePath;
-public class LicenseReaderDumpMix implements Opcodes {
+public class LicenseReaderPlanCDumpFix implements Opcodes {
 
 public static byte[] dump () throws Exception {
 
@@ -33,7 +33,7 @@ classWriter.visitInnerClass("com/jp/protection/pub/LicenseReader$Storage", "com/
 {
 fieldVisitor = classWriter.visitField(ACC_PRIVATE | ACC_TRANSIENT, "fLicenseReaderListeners", "Ljava/util/Vector;", null, null);
 fieldVisitor.visitEnd();
-
+}
 {
 fieldVisitor = classWriter.visitField(ACC_PROTECTED, "fLicense", "Lcom/jp/protection/pub/License;", null, null);
 fieldVisitor.visitEnd();
@@ -160,7 +160,7 @@ Label label7 = new Label();
 methodVisitor.visitLabel(label7);
 methodVisitor.visitLineNumber(40, label7);
 methodVisitor.visitVarInsn(ALOAD, 0);
-methodVisitor.visitInsn(ICONST_0);
+methodVisitor.visitInsn(ICONST_1);
 methodVisitor.visitFieldInsn(PUTFIELD, "com/jp/protection/pub/LicenseReader", "fSkipEncryption", "Z");
 Label label8 = new Label();
 methodVisitor.visitLabel(label8);
@@ -2932,6 +2932,5 @@ methodVisitor.visitEnd();
 classWriter.visitEnd();
 
 return classWriter.toByteArray();
-}
 }
 }

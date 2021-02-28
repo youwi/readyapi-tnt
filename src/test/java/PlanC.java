@@ -15,34 +15,24 @@ public class PlanC {
     static Object publicObject = null;
 
     @Test
-    public void byJavaCodePlanC() throws IOException {
-
+    public void byJavaCodePlanC() throws Exception {
+        String fileCoreName = "LicenseReaderPlanC";
         PlanA.javaToAsmSource("com.jp.protection.pub.LicenseReader");
 
-        String oriString = PlanA.readFileToString("src/test/java/LicenseReaderDump.java");
+        String oriString = PlanA.readFileToString("src/test/java/gen/LicenseReaderDump.java");
 
         String matchString = "methodVisitor.visitInsn(ICONST_0);\nmethodVisitor.visitFieldInsn(PUTFIELD, \"com/jp/protection/pub/LicenseReader\", \"fSkipEncryption\", \"Z\");";
         String newString = "methodVisitor.visitInsn(ICONST_1);\nmethodVisitor.visitFieldInsn(PUTFIELD, \"com/jp/protection/pub/LicenseReader\", \"fSkipEncryption\", \"Z\");";
         // 修正类型不一致
         String out = oriString.replace(matchString, newString);
-        out = out.replace("public class LicenseReaderDump implements", "public class LicenseReaderDumpMixPlanC implements");
-        out = out.replace("package asm.com.jp.protection.pub", "");
-        out = out.trim();
+        out=out.replace("LicenseReaderDump","LicenseReaderPlanCDump");
 
-        File outFile = new File("src/test/java/LicenseReaderDumpMixPlanC.java");
-        if (outFile.exists()) outFile.delete();
-        FileOutputStream fileOutputStream = new FileOutputStream(outFile);
-        fileOutputStream.write(out.getBytes());
-        fileOutputStream.flush();
+        PlanFixExit.saveDumpFixJavaFile(fileCoreName, out);
+
+        PlanFixExit.loadAsmClassAndRunDump(fileCoreName + "DumpFix");
+
     }
 
-    @Test
-    public void classDumpTestPlanC() throws Exception {
-        byte[] s = LicenseReaderDumpMixPlanC.dump();
-        FileOutputStream fileOutputStream = new FileOutputStream(new File("FakePlanC.class"));
-        fileOutputStream.write(s);
-        fileOutputStream.flush();
-    }
 
     @Test
     public void buildDecodeKey() throws IOException {
@@ -54,9 +44,9 @@ public class PlanC {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         Properties properties = new Properties();
         properties.load(byteArrayInputStream);
-        properties.setProperty("exd","9472048779952");
-        ByteArrayOutputStream bo=new ByteArrayOutputStream();
-        properties.store(bo,"");
+        properties.setProperty("exd", "9472048779952");
+        ByteArrayOutputStream bo = new ByteArrayOutputStream();
+        properties.store(bo, "");
 
         LicenseTest.pureKeyToKeyFile(bo.toByteArray(), "soapui36-decode.key");
     }
@@ -70,14 +60,14 @@ public class PlanC {
          * 注意修改文件不能有中文,不能乱加空格和标点符号
          */
 
-        byte[] bytes =PlanA.readFileToString("soapui36.key.txt").getBytes();
+        byte[] bytes = PlanA.readFileToString("soapui36.key.txt").getBytes();
         //替换过期时间
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         Properties properties = new Properties();
         properties.load(byteArrayInputStream);
-        properties.setProperty("exd","8472048779952");
-        ByteArrayOutputStream bo=new ByteArrayOutputStream();
-        properties.store(bo,"");
+        properties.setProperty("exd", "8472048779952");
+        ByteArrayOutputStream bo = new ByteArrayOutputStream();
+        properties.store(bo, "");
 
         LicenseTest.pureKeyToKeyFile(bo.toByteArray(), "soapui36-decode.key");
     }
