@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.lang.reflect.Method;
 
 /**
  * readyapi-tnt
@@ -12,33 +12,91 @@ import java.io.IOException;
 public class PlanFixExit {
 
     @Test
-    public void fixExitTest() throws IOException {
+    public void fixExitTestByAsmCode() throws IOException {
+        String fileCoreName="ConcurrentXmlLoadProcess";
+
         PlanA.javaToAsmSource("com.smartbear.ready.module.ConcurrentXmlLoadProcess");
 
         String matchStringA = "methodVisitor.visitLdcInsn(\"ex\")";
         String matchStringB = "methodVisitor.visitLdcInsn(\"it\")";
 
-        String matchString = "methodVisitor.visitMethodInsn(INVOKESTATIC, \"com/smartbear/ready/utils/ReflectionUtils\", \"callMethod\", \"(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;\", false);";
+        String matchString = "methodVisitor.visitMethodInsn(INVOKESTATIC, \"java/lang/Integer\", \"valueOf\", \"(I)Ljava/lang/Integer;\", false);\n" +
+                "methodVisitor.visitInsn(AASTORE);\n" +
+                "methodVisitor.visitMethodInsn(INVOKESTATIC, \"com/smartbear/ready/utils/ReflectionUtils\", \"callMethod\", \"(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;\", false);\n";
+        String targetString = "methodVisitor.visitMethodInsn(INVOKESTATIC, \"java/lang/Integer\", \"valueOf\", \"(I)Ljava/lang/Integer;\", false);\n" +
+                "methodVisitor.visitInsn(AASTORE);";
         String oriString = PlanA.readFileToString("src/test/java/ConcurrentXmlLoadProcessDump.java");
 
-        String out = PlanA.replaceStringAtByBlock(oriString, matchString, "//-----", matchStringA);
+        String out = replaceStringAtByBlock(oriString, matchString, targetString, matchStringA);
 
+        saveDumpFixJavaFile(fileCoreName,out);
+    }
 
-        out = out.replace("package asm.com.smartbear.ready.module;", "");
-        out = out.replace("ConcurrentXmlLoadProcessDump", "ConcurrentXmlLoadProcessDumpFix");
+    @Test
+    public void fixLicenseBootstrapTest() throws IOException {
+        String fileCoreName="LicenseBootstrap";
+        PlanA.javaToAsmSource("com.smartbear.ready.license.LicenseBootstrap");
 
-        PlanA.stringToFile(out, "src/test/java/ConcurrentXmlLoadProcessDumpFix.java");
-        
+        String oriString = PlanA.readFileToString("src/test/java/LicenseBootstrapDump.java");
+
+        String out = oriString.replace("methodVisitor.visitMethodInsn(INVOKESTATIC, \"com/eviware/soapui/support/swing/SwingUtils\", \"exit\", \"(I)V\", false);\n","");
+
+        saveDumpFixJavaFile(fileCoreName,out);
+    }
+    static void saveDumpFixJavaFile(String fileCoreName,String data) throws IOException {
+        data = data.replaceAll("package asm.(.*?);", "//");
+        data = data.replace(fileCoreName+"Dump", fileCoreName+"DumpFix");
+        PlanA.stringToFile(data, "src/test/java/"+fileCoreName+"DumpFix.java");
+    }
+
+    /**
+     * 在大段文本中找到小字符串然后替换掉
+     *
+     * @param oriString    原始大文本
+     * @param craString    要替换的小串
+     * @param targetString 替换为
+     * @param matchString  定位串
+     * @return
+     */
+    static String replaceStringAtByBlock(String oriString, String craString, String targetString, String matchString) {
+        String[] oriStrings = oriString.split("\\}");
+        String[] craStrings = craString.split("\\}");
+        StringBuilder outString = new StringBuilder();
+
+        for (int i = 0; i < oriStrings.length; i++) {
+            String tmpString = oriStrings[i];
+            if (tmpString.contains(matchString)) {
+                oriStrings[i] = oriStrings[i].replace(craString, targetString);
+            }
+        }
+        for (int i = 0; i < oriStrings.length; i++) {
+            String tmpString = oriStrings[i];
+            outString.append(tmpString);
+            if (i > 0) {
+                outString.append("}");
+            }
+        }
+        return outString.toString();
     }
 
 
     @Test
     public void fixClassDumpTest() throws Exception {
-        byte[] s = ConcurrentXmlLoadProcessDumpFix.dump();
+        byte[] s = (byte[]) Class.forName("ConcurrentXmlLoadProcessDumpFix").getMethod("dump").invoke(null);
+
         FileOutputStream fileOutputStream = new FileOutputStream(new File("cxp.class"));
         fileOutputStream.write(s);
         fileOutputStream.flush();
     }
+
+    @Test
+    public void fixLicenseBootstrapTestDump() throws Exception {
+        byte[] s = (byte[]) Class.forName("LicenseBootstrapDumpFix").getMethod("dump").invoke(null);
+        FileOutputStream fileOutputStream = new FileOutputStream(new File("lbd.class"));
+        fileOutputStream.write(s);
+        fileOutputStream.flush();
+    }
+
 
     @Test
     public void base64Test() {

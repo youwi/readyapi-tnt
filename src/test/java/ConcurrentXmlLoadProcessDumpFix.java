@@ -1454,7 +1454,7 @@ methodVisitor.visitTypeInsn(ANEWARRAY, "java/lang/Object");
 Label label6 = new Label();
 methodVisitor.visitLabel(label6);
 methodVisitor.visitLineNumber(142, label6);
-//-----
+methodVisitor.visitMethodInsn(INVOKESTATIC, "com/smartbear/ready/utils/ReflectionUtils", "callMethod", "(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;", false);
 methodVisitor.visitInsn(POP);
 methodVisitor.visitLabel(label1);
 methodVisitor.visitLineNumber(144, label1);
@@ -1483,9 +1483,7 @@ methodVisitor.visitInsn(DUP);
 methodVisitor.visitInsn(ICONST_0);
 methodVisitor.visitInsn(ICONST_M1);
 methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
-methodVisitor.visitInsn(AASTORE);
-//-----
-methodVisitor.visitInsn(POP);
+methodVisitor.visitInsn(AASTORE);methodVisitor.visitInsn(POP);
 methodVisitor.visitLabel(label4);
 methodVisitor.visitLineNumber(150, label4);
 methodVisitor.visitJumpInsn(GOTO, label7);

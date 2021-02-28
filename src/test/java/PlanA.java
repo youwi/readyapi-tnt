@@ -25,6 +25,7 @@ public class PlanA {
         ASMifier afOri = new ASMifier();
         ASMifier afCrack = new ASMifier();
         // ASMifier.main(new String[]{"com.jp.protection.pub.LicenseReader"});
+        String fileCoreName="LicenseReader";
 
         javaToAsmSource("com.jp.protection.pub.LicenseReader");
         javaToAsmSource("com.jp.protection.pub.LicenseReaderCrack");
@@ -38,13 +39,12 @@ public class PlanA {
 
         // 修正类型不一致
         out = out.replace("LicenseReaderCrack", "LicenseReader");
-        out = out.replace("public class LicenseReaderDump implements", "public class LicenseReaderDumpMix implements");
-        out = out.replace("package asm.com.jp.protection.pub", "");
-        out = out.trim();
 
-        stringToFile(out,"src/test/java/LicenseReaderDumpMix.java");
+        PlanFixExit.saveDumpFixJavaFile(fileCoreName,out);
+
     }
-    static void stringToFile(String out,String fileName) throws IOException {
+
+    static void stringToFile(String out, String fileName) throws IOException {
         File outFile = new File(fileName);
         if (outFile.exists()) outFile.delete();
         FileOutputStream fileOutputStream = new FileOutputStream(outFile);
@@ -54,9 +54,10 @@ public class PlanA {
 
     /**
      * 搜索并替换asm代码中的函数
-     * @param oriString 代码源
-     * @param craString 替换源
-     * @param matchString  搜索要替换的函数
+     *
+     * @param oriString   代码源
+     * @param craString   替换源
+     * @param matchString 搜索要替换的函数
      */
     static String replaceStringAt(String oriString, String craString, String matchString) {
         String[] oriStrings = oriString.split("\\}");
@@ -85,35 +86,6 @@ public class PlanA {
         return outString.toString();
     }
 
-
-    /**
-     * 在大段文本中找到小字符串然后替换掉
-     * @param oriString 原始大文本
-     * @param craString 要替换的小串
-     * @param targetString 替换为
-     * @param matchString 定位串
-     * @return
-     */
-    static String replaceStringAtByBlock(String oriString, String craString,String targetString, String matchString) {
-        String[] oriStrings = oriString.split("\\}");
-        String[] craStrings = craString.split("\\}");
-        StringBuilder outString = new StringBuilder();
-
-        for (int i = 0; i < oriStrings.length; i++) {
-            String tmpString = oriStrings[i];
-            if (tmpString.contains(matchString)) {
-                oriStrings[i]= oriStrings[i].replace(craString,targetString);
-            }
-        }
-        for (int i = 0; i < oriStrings.length; i++) {
-            String tmpString = oriStrings[i];
-            outString.append(tmpString);
-            if (i > 0) {
-                outString.append("}");
-            }
-        }
-        return outString.toString();
-    }
 
     /**
      * 把字节码转换为asm源码,文件保存到 src/test/java目录下.
@@ -160,9 +132,11 @@ public class PlanA {
 
     @Test
     public void classDumpTest() throws Exception {
-        byte[] s = LicenseReaderDumpMix.dump();
+        byte[] s = (byte[]) Class.forName("LicenseReaderDumpMix").getMethod("dump").invoke(null);
         FileOutputStream fileOutputStream = new FileOutputStream(new File("Fake.class"));
         fileOutputStream.write(s);
         fileOutputStream.flush();
     }
+
+
 }

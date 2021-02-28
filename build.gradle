@@ -14,6 +14,7 @@ targetCompatibility = 1.7
 
 dependencies {
     compileOnly fileTree(dir: appRoot + '/lib', include: ['ready-api*.jar'])
+    compileOnly fileTree(dir: appRoot + '/lib', include: ['Pro*.jar',"load*.jar"])
 
     implementation fileTree(dir: 'lib', include: ['*.jar'])
 
@@ -69,8 +70,13 @@ task backUpProtectionJar {
 
 task zipReadyApiUIJar {
     doLast {
-        //       copyZipContent("lib/ready-api-ui-3.6.0.jar","ready-api-ui-3.6.0-new.jar")
         classToZipFile("lib/ready-api-ui-3.6.0.jar", "com/smartbear/ready/module/ConcurrentXmlLoadProcess.class", "cxp.class")
+    }
+}
+
+task zipReadyApiLicenseJar {
+    doLast {
+        classToZipFile("lib/ready-api-license-3.6.0.jar", "com/smartbear/ready/module/ConcurrentXmlLoadProcess.class", "lbd.class")
     }
 }
 
