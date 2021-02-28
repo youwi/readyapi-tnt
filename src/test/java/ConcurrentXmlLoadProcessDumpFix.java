@@ -35,7 +35,7 @@ classWriter.visitInnerClass("com/smartbear/ready/module/ConcurrentXmlLoadProcess
 {
 fieldVisitor = classWriter.visitField(ACC_PUBLIC | ACC_FINAL | ACC_STATIC, "XML_VALUE", "Ljava/lang/String;", null, "62e7473e77a2c36b0fcc169dad8da2ba");
 fieldVisitor.visitEnd();
-}
+
 {
 fieldVisitor = classWriter.visitField(ACC_PRIVATE | ACC_FINAL | ACC_STATIC, "a", "Ljava/lang/String;", null, "get");
 fieldVisitor.visitEnd();
@@ -1215,7 +1215,7 @@ methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append"
 methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
 methodVisitor.visitInsn(ICONST_0);
 methodVisitor.visitTypeInsn(ANEWARRAY, "java/lang/Object");
-//------
+methodVisitor.visitMethodInsn(INVOKESTATIC, "com/smartbear/ready/utils/ReflectionUtils", "callMethod", "(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;", false);
 methodVisitor.visitVarInsn(ASTORE, 1);
 Label label1 = new Label();
 methodVisitor.visitLabel(label1);
@@ -1230,7 +1230,7 @@ methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append"
 methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
 methodVisitor.visitInsn(ICONST_0);
 methodVisitor.visitTypeInsn(ANEWARRAY, "java/lang/Object");
-//------
+methodVisitor.visitMethodInsn(INVOKESTATIC, "com/smartbear/ready/utils/ReflectionUtils", "callMethod", "(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;", false);
 methodVisitor.visitVarInsn(ASTORE, 1);
 Label label2 = new Label();
 methodVisitor.visitLabel(label2);
@@ -1245,7 +1245,7 @@ methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append"
 methodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;", false);
 methodVisitor.visitInsn(ICONST_0);
 methodVisitor.visitTypeInsn(ANEWARRAY, "java/lang/Object");
-//------
+methodVisitor.visitMethodInsn(INVOKESTATIC, "com/smartbear/ready/utils/ReflectionUtils", "callMethod", "(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;", false);
 methodVisitor.visitTypeInsn(CHECKCAST, "java/net/URL");
 methodVisitor.visitInsn(ARETURN);
 methodVisitor.visitMaxs(4, 2);
@@ -1315,7 +1315,7 @@ methodVisitor.visitInsn(AASTORE);
 Label label11 = new Label();
 methodVisitor.visitLabel(label11);
 methodVisitor.visitLineNumber(120, label11);
-//------
+methodVisitor.visitMethodInsn(INVOKESTATIC, "com/smartbear/ready/utils/ReflectionUtils", "callMethod", "(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;", false);
 Label label12 = new Label();
 methodVisitor.visitLabel(label12);
 methodVisitor.visitLineNumber(122, label12);
@@ -1454,7 +1454,7 @@ methodVisitor.visitTypeInsn(ANEWARRAY, "java/lang/Object");
 Label label6 = new Label();
 methodVisitor.visitLabel(label6);
 methodVisitor.visitLineNumber(142, label6);
-//------
+//-----
 methodVisitor.visitInsn(POP);
 methodVisitor.visitLabel(label1);
 methodVisitor.visitLineNumber(144, label1);
@@ -1484,7 +1484,7 @@ methodVisitor.visitInsn(ICONST_0);
 methodVisitor.visitInsn(ICONST_M1);
 methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
 methodVisitor.visitInsn(AASTORE);
-//------
+//-----
 methodVisitor.visitInsn(POP);
 methodVisitor.visitLabel(label4);
 methodVisitor.visitLineNumber(150, label4);
@@ -1507,5 +1507,6 @@ methodVisitor.visitEnd();
 classWriter.visitEnd();
 
 return classWriter.toByteArray();
+}
 }
 }

@@ -69,4 +69,7 @@
 
 ## 闪退解决方案:
     使用了反射来调用了System.exit()
-    readyapi-ui.jar:com.smartbear.ready.module.ConcurrentXmlLoadProcess
+    readyapi-api-ui.jar:com.smartbear.ready.module.ConcurrentXmlLoadProcess
+
+    直接调用了:SwingUtils.exit(9)
+    readyapi-soapui-pro.jar:com.smartbear.ready.module.ToolbarActionAssistant;

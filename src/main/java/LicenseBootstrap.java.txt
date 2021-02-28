@@ -1,0 +1,135 @@
+/**
+ * Created by yu on 15/9/28.
+ */
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+package com.smartbear.ready.license;
+
+import com.eviware.soapui.SoapUI;
+import com.eviware.soapui.model.workspace.Workspace;
+import com.eviware.soapui.support.StringUtils;
+import com.eviware.soapui.support.UISupport;
+import com.eviware.soapui.support.swing.SwingUtils;
+import com.google.inject.Inject;
+import com.smartbear.ready.core.Install4JPreferences;
+import com.smartbear.ready.license.LicenseManagerServiceFactory;
+import com.smartbear.ready.license.action.AbstractLicenseUpdateAction;
+import com.smartbear.ready.license.action.LicenseManagerAction;
+import com.smartbear.ready.license.action.StartTrialAction;
+import com.smartbear.ready.license.exception.InvalidLicenseException;
+import com.smartbear.ready.license.protection.LicensedModule;
+import com.smartbear.ready.license.util.LicenseFileUtil;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.prefs.BackingStoreException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class LicenseBootstrap {
+    public static final String DOWNLOAD_KEY_SEPARATOR = "_";
+    private LicenseManagerAction a;
+    private StartTrialAction b;
+    private static Logger c = LoggerFactory.getLogger(LicenseBootstrap.class);
+
+    public LicenseBootstrap() {
+    }
+
+    @Inject
+    public void setLicenseManagerAction(LicenseManagerAction var1) {
+        this.a = var1;
+    }
+
+    @Inject
+    public void setStartTrialAction(StartTrialAction var1) {
+        this.b = var1;
+    }
+
+    public boolean isValidLicenseAvailableForAtLeastOneModule() throws IOException, InvalidLicenseException {
+        return LicenseManagerServiceFactory.isValidLicensePresentForAtLeastOneModule(LicensedModule.getReadyApiLicensedModules());
+    }
+
+    public void installTrialLicenseForDownloadKey() {
+        String var1 = Install4JPreferences.getInstallerFile();
+        if(StringUtils.hasContent(var1)) {
+            try {
+                String var2 = (new File(var1)).getName();
+                boolean var3 = var2.contains("_") && var2.contains(".");
+                if(!var3) {
+                    return;
+                }
+
+                String var4 = var2.substring(var2.lastIndexOf("_") + 1, var2.lastIndexOf("."));
+                if(StringUtils.hasContent(var4) && !var4.equalsIgnoreCase("null")) {
+                    try {
+                        URL var5 = new URL(AbstractLicenseUpdateAction.LICENSE_SERVER_URL + "external_trial?downloadKey=" + var4);
+                        File var6 = LicenseFileUtil.downloadLicenseFileFromServer(var5);
+                        this.b.installLicensesFromFile(var6, new LicensedModule[0]);
+                    } catch (IOException var15) {
+                        c.error("Failed to install trial license.", var15);
+                    } catch (InvalidLicenseException var16) {
+                        UISupport.showErrorMessage(var16.getMessage());
+                        c.error("Failed to install trial license.", var16);
+                    }
+                }
+            } finally {
+                try {
+                    Install4JPreferences.setInstallerFileToEmpty();
+                } catch (BackingStoreException var14) {
+                    c.error("Failed to update the trial installation status for download key");
+                }
+
+            }
+
+        }
+    }
+
+    public void promptForLicenseAndExitIfNoLicenseProvided() {
+        return;
+//        try {
+//            boolean var1 = this.b();
+//            if(var1) {
+//                this.a();
+//            }
+//        } catch (Throwable var2) {
+//            c.error("Failed to install license.", var2);
+//            c();
+//        }
+
+    }
+
+    void a() throws IOException, InvalidLicenseException {
+        if(!this.isValidLicenseAvailableForAtLeastOneModule()) {
+            c();
+        }
+
+    }
+
+    boolean b() {
+        boolean var1 = UISupport.confirm("No valid license found. Do you want to install a license?", "No Valid License Found");
+        if(var1) {
+            this.a.perform((Workspace)null, (Object)null);
+        } else {
+            c();
+        }
+
+        return var1;
+    }
+
+    private static void c() {
+        if(true){
+        // UISupport.confirm("No valid license found, Ready! API will shut down.\nDo you want to save all your projects?", "Save all your projects")) {
+            try {
+                SoapUI.getSoapUICore().saveSettings();
+                SoapUI.getWorkspace().save(false);
+            } catch (Throwable var1) {
+                c.error("Failed to save preferences/projects.", var1);
+            }
+        }
+
+       // SwingUtils.exit(9); 不退出,哈哈
+    }
+}

@@ -1,0 +1,108 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//  com.smartbear.ready.license.validation.TrialLicenseInstallationValidator
+
+package com.smartbear.ready.license.validation;
+
+import com.eviware.soapui.support.UISupport;
+import com.eviware.soapui.support.preferences.UserPreferences;
+import com.google.inject.Inject;
+import com.smartbear.ready.core.ReadyApiCoreModule;
+import com.smartbear.ready.license.LicenseData;
+import com.smartbear.ready.license.LicenseManagerServiceFactory;
+import com.smartbear.ready.license.LicenseType;
+import com.smartbear.ready.license.api.LicenseManagerService;
+import com.smartbear.ready.license.exception.InvalidLicenseException;
+import com.smartbear.ready.license.protection.LicensedModule;
+import com.smartbear.ready.license.validation.LicenseInstallationValidator;
+import java.io.File;
+
+public class TrialLicenseInstallationValidator implements LicenseInstallationValidator {
+    public static final int NOT_INSTALLED = -1;
+    public static final String REGEX_DOT = "\\.";
+    private UserPreferences a;
+    private LicenseManagerServiceFactory b;
+
+    public TrialLicenseInstallationValidator() {
+    }
+
+    @Inject
+    public void setLicenseManagerServiceFactory(LicenseManagerServiceFactory var1) {
+        this.b = var1;
+    }
+
+    @Inject
+    public void setUserPreferences(UserPreferences var1) {
+        this.a = var1;
+    }
+
+    public void validateLicense(File var1, LicenseData var2) throws InvalidLicenseException {
+        if(var2.getType().equals(LicenseType.TRIAL) && !var2.shouldSkipUserInteraction()) {
+            LicensedModule var3 = var2.getLicensedModule();
+            LicenseManagerService var4 = this.b.getLicenseManagerServiceForModule(var3);
+            if(this.a(var4)) {
+                UISupport.showInfoMessage("A valid professional license exists for module " + var3.getModernName() + ". Trial license will not be installed");
+                var1.delete();
+            } else {
+                int var5 = this.a.getInstallationType(var3.name());
+                boolean var6 = this.a(var3, var5);
+                if(!var6) {
+                    // 这行断定关闭了
+                 //   throw new InvalidLicenseException("Can\'t install the " + var3.getModernName() + " trial license when a trial/standard license has been used once.");
+                }
+            }
+        }
+    }
+
+    private boolean a(LicensedModule var1, int var2) {
+        if(var2 == -1) {
+            return true;
+        } else {
+            String var3 = this.a(var1);
+            return this.a(ReadyApiCoreModule.READY_API_VERSION, var3);
+        }
+    }
+
+    private String a(LicensedModule var1) {
+        String var2 = this.a.getTrialVersion(var1.name());
+        String var3 = this.a.getVersionForProLicense(var1.name());
+        if(var2 == null) {
+            return var3;
+        } else if(var3 == null) {
+            return var2;
+        } else {
+            String[] var4 = var2.split("\\.");
+            String[] var5 = var3.split("\\.");
+            int var6 = Integer.valueOf(var4[0]).intValue();
+            int var7 = Integer.valueOf(var5[0]).intValue();
+            if(var6 != var7) {
+                return var6 > var7?var2:var3;
+            } else {
+                int var8 = Integer.valueOf(var4[1]).intValue();
+                int var9 = Integer.valueOf(var5[1]).intValue();
+                return var8 != var9?(var8 > var9?var2:var3):var2;
+            }
+        }
+    }
+
+    private boolean a(LicenseManagerService var1) {
+        return var1.isLicenseValid() && var1.getLicenseData().isProfessionalLicense();
+    }
+
+    private boolean a(String var1, String var2) {
+        if(var1.equals(var2)) {
+            return false;
+        } else {
+            String[] var3 = var1.split("\\.");
+            int var4 = Integer.valueOf(var3[0]).intValue();
+            int var5 = Integer.valueOf(var3[1]).intValue();
+            String[] var6 = var2.split("\\.");
+            int var7 = Integer.valueOf(var6[0]).intValue();
+            int var8 = Integer.valueOf(var6[1]).intValue();
+            boolean var9 = var4 > var7;
+            boolean var10 = var4 == var7 && var5 > var8;
+            return var9 || var10;
+        }
+    }
+}
